@@ -106,14 +106,14 @@
     }
 
 
-    const APP_VERSION = "v97";
+    const APP_VERSION = "v98";
 
     const I18N = {
       zh: {
         htmlLang:"zh-CN",
         title:"2026 世界杯",
-        browserTitle:"2026 世界杯赛程 v97",
-        pwaAppName:"2026世界杯 v97",
+        browserTitle:"2026 世界杯赛程 v98",
+        pwaAppName:"2026世界杯 v98",
         langZhLabel:"中文",
         langEnLabel:"英文",
         langTrLabel:"土耳其语",
@@ -178,8 +178,8 @@
       en: {
         htmlLang:"en",
         title:"World Cup 2026",
-        browserTitle:"World Cup 2026 Schedule v97",
-        pwaAppName:"World Cup 2026 v97",
+        browserTitle:"World Cup 2026 Schedule v98",
+        pwaAppName:"World Cup 2026 v98",
         langZhLabel:"Chinese",
         langEnLabel:"English",
         langTrLabel:"Turkish",
@@ -244,8 +244,8 @@
       tr: {
         htmlLang:"tr",
         title:"2026 Dünya Kupası",
-        browserTitle:"2026 Dünya Kupası Programı v97",
-        pwaAppName:"Dünya Kupası 2026 v97",
+        browserTitle:"2026 Dünya Kupası Programı v98",
+        pwaAppName:"Dünya Kupası 2026 v98",
         langZhLabel:"Çince",
         langEnLabel:"İngilizce",
         langTrLabel:"Türkçe",
@@ -609,7 +609,8 @@
       cloudConfig: null,
       cloudConfigLoading: null,
       matchImages: {},
-      imageViewer: {key:'', index:0, scale:1}
+      imageViewer: {key:'', index:0, scale:1},
+      imageDebugLogs: []
     };
 
     function createMatchItem(raw, idx){
@@ -2555,15 +2556,73 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
       const detail = [status, msg].filter(Boolean).join('：');
       return detail ? `${fallback}（${detail}）` : fallback;
     }
-    function logImageDebug(label, data){
-      try{ console.debug(`[match-images] ${label}`, data || ''); }catch(e){}
+    function maskImageDebugData(data){
+      try{
+        if(data == null) return data;
+        const seen = new WeakSet();
+        return JSON.parse(JSON.stringify(data, (key, value) => {
+          if(typeof value === 'object' && value !== null){
+            if(seen.has(value)) return '[Circular]';
+            seen.add(value);
+          }
+          if(/password|token|authorization/i.test(key)){
+            const raw = String(value || '');
+            return raw ? `***(${raw.length})` : '';
+          }
+          if(key === 'base64'){
+            const raw = String(value || '');
+            return raw ? `[base64 length ${raw.length}]` : '';
+          }
+          return value;
+        }));
+      }catch(e){
+        return String(data);
+      }
+    }
+    function appendImageDebugLine(line){
+      const $panel = $('#matchImageDebugLog');
+      if(!$panel.length) return;
+      const oldText = $panel.text() || '';
+      const next = (oldText ? oldText + '\n' : '') + line;
+      $panel.text(next.split('\n').slice(-80).join('\n'));
+    }
+    function logImageDebug(label, data, level='log'){
+      const safe = maskImageDebugData(data);
+      const item = {time:new Date().toISOString(), label, data:safe};
+      try{
+        app.imageDebugLogs = app.imageDebugLogs || [];
+        app.imageDebugLogs.push(item);
+        if(app.imageDebugLogs.length > 200) app.imageDebugLogs.shift();
+        window.__WC_IMAGE_DEBUG_LOGS = app.imageDebugLogs;
+      }catch(e){}
+      const line = `[${new Date().toLocaleTimeString()}] ${label}${safe === undefined || safe === '' ? '' : ' ' + (typeof safe === 'string' ? safe : JSON.stringify(safe))}`;
+      appendImageDebugLine(line);
+      try{
+        const fn = level === 'error' ? console.error : (level === 'warn' ? console.warn : console.log);
+        fn.call(console, `[match-images] ${label}`, safe || '');
+      }catch(e){}
+    }
+    function describeFile(file){
+      if(!file) return null;
+      return {
+        name:file.name || '',
+        type:file.type || '',
+        size:file.size || 0,
+        lastModified:file.lastModified || 0,
+        extension:imageExtensionFromFile(file)
+      };
+    }
+    function setMatchImageDebugVisible(visible){
+      $('#matchImageDebugBox').toggleClass('hidden', !visible);
     }
     function loadCloudConfig(force=false){
       if(app.cloudConfig && !force) return $.Deferred().resolve(app.cloudConfig).promise();
       if(app.cloudConfigLoading && !force) return app.cloudConfigLoading;
       const dfd = $.Deferred();
       app.cloudConfigLoading = dfd.promise();
-      $.ajax({url:withCacheBust(CLOUD_CONFIG_URL), dataType:'json', cache:false, timeout:8000})
+      const cfgUrl = withCacheBust(CLOUD_CONFIG_URL);
+      logImageDebug('config request', {url:cfgUrl});
+      $.ajax({url:cfgUrl, dataType:'json', cache:false, timeout:8000})
         .done(cfg => {
           logImageDebug('config loaded', cfg);
           app.cloudConfig = Object.assign({enabled:true, workerBaseUrl:'', appPassword:'', imageRoot:'worldcup-cloud/match-images', maxImageWidth:MATCH_IMAGE_DEFAULT_MAX_WIDTH, jpegQuality:MATCH_IMAGE_DEFAULT_QUALITY}, cfg || {});
@@ -2616,10 +2675,15 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
             <div class="match-images-actions">
               <button class="match-image-btn" id="matchImageUploadBtn" type="button">${esc(imageText('uploadImages'))}</button>
               <button class="match-image-btn ghost" id="matchImageRefreshBtn" type="button">${esc(imageText('refreshImages'))}</button>
-              <input id="matchImageFileInput" class="match-image-file" type="file" accept="image/*" multiple>
+              <button class="match-image-btn ghost" id="matchImageDebugBtn" type="button">Debug</button>
+              <input id="matchImageFileInput" class="match-image-file" type="file" accept="image/*,.heic,.heif,.avif,.webp,.png,.jpg,.jpeg,.gif,.bmp" multiple>
             </div>
           </div>
           <div class="match-image-status" id="matchImageStatus">${esc(imageText('imageLoading'))}</div>
+          <div class="match-image-debug hidden" id="matchImageDebugBox">
+            <div class="match-image-debug-head">上传调试日志 <button type="button" id="matchImageCopyDebugBtn">复制日志</button></div>
+            <pre id="matchImageDebugLog"></pre>
+          </div>
           <div class="match-image-grid" id="matchImageGrid"></div>
         </section>`;
     }
@@ -2662,6 +2726,7 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
     }
     function loadMatchImages(match, force=false){
       const matchKey = matchCloudKey(match);
+      logImageDebug('list start', {matchKey, force});
       setMatchImageStatus(imageText('imageLoading'));
       if(!force){
         try{
@@ -2675,10 +2740,13 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
           renderMatchImageGrid(matchKey, []);
           return;
         }
-        return $.ajax({url:cloudApi(`/api/matches/${encodeURIComponent(matchKey)}/images`), dataType:'json', cache:false, timeout:15000})
+        const listUrl = cloudApi(`/api/matches/${encodeURIComponent(matchKey)}/images`);
+        logImageDebug('list request', {url:listUrl, workerBaseUrl:cfg.workerBaseUrl, imageRoot:cfg.imageRoot});
+        return $.ajax({url:listUrl, dataType:'json', cache:false, timeout:15000})
           .done(res => {
             const active = $('.match-images-card').data('match-key');
             if(active && String(active) !== matchKey) return;
+            logImageDebug('list done', {matchKey, ok:res && res.ok, count:res && res.images ? res.images.length : 0});
             const images = Array.isArray(res && res.images) ? res.images : [];
             app.matchImages[matchKey] = images;
             try{ localStorage.setItem(imageCacheKey(matchKey), JSON.stringify({updatedAt:new Date().toISOString(), images})); }catch(e){}
@@ -2694,13 +2762,22 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
     function initMatchImages(match){
       const active = $('.match-images-card').data('match-key');
       if(!active) return;
+      logImageDebug('init shell', {matchKey: active, match: match && {num:match.num, team1:match.team1, team2:match.team2, round:match.round}});
       loadMatchImages(match, false);
     }
     function readFileAsDataUrl(file){
       const dfd = $.Deferred();
       const reader = new FileReader();
-      reader.onload = () => dfd.resolve(String(reader.result || ''));
-      reader.onerror = () => dfd.reject(reader.error || new Error('read failed'));
+      logImageDebug('file read start', describeFile(file));
+      reader.onload = () => {
+        const result = String(reader.result || '');
+        logImageDebug('file read done', {file:describeFile(file), dataUrlLength:result.length});
+        dfd.resolve(result);
+      };
+      reader.onerror = () => {
+        logImageDebug('file read failed', {file:describeFile(file), message:reader.error && reader.error.message}, 'error');
+        dfd.reject(reader.error || new Error('read failed'));
+      };
       reader.readAsDataURL(file);
       return dfd.promise();
     }
@@ -2715,7 +2792,7 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
     function imageExtensionFromFile(file){
       const name = String(file && file.name || '').toLowerCase();
       const ext = (name.match(/\.([a-z0-9]+)$/) || [,'jpg'])[1];
-      if(['jpg','jpeg','png','webp','gif','heic','heif'].includes(ext)) return ext === 'jpeg' ? 'jpg' : ext;
+      if(['jpg','jpeg','png','webp','gif','heic','heif','avif','bmp','tif','tiff'].includes(ext)) return ext === 'jpeg' ? 'jpg' : ext;
       return 'jpg';
     }
     function imageContentTypeFromFile(file, fallback='image/jpeg'){
@@ -2727,6 +2804,9 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
       if(ext === 'gif') return 'image/gif';
       if(ext === 'heic') return 'image/heic';
       if(ext === 'heif') return 'image/heif';
+      if(ext === 'avif') return 'image/avif';
+      if(ext === 'bmp') return 'image/bmp';
+      if(ext === 'tif' || ext === 'tiff') return 'image/tiff';
       return fallback;
     }
     function createImageUploadId(){
@@ -2739,6 +2819,7 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
         const base64 = String(dataUrl || '').split(',')[1] || '';
         const ext = imageExtensionFromFile(file);
         const imageId = createImageUploadId();
+        logImageDebug('raw payload ready', {file:describeFile(file), id:imageId, base64Length:base64.length});
         return {
           id: imageId,
           fileName: `${imageId}.${ext === 'jpeg' ? 'jpg' : ext}`,
@@ -2754,6 +2835,7 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
       });
     }
     function compressImageFile(file, cfg){
+      logImageDebug('compress start', {file:describeFile(file), maxImageWidth:cfg && cfg.maxImageWidth, jpegQuality:cfg && cfg.jpegQuality});
       return readFileAsDataUrl(file).then(dataUrl => loadImageElement(dataUrl).then(img => {
         const maxWidth = Number(cfg.maxImageWidth || MATCH_IMAGE_DEFAULT_MAX_WIDTH) || MATCH_IMAGE_DEFAULT_MAX_WIDTH;
         const quality = Math.max(0.5, Math.min(0.95, Number(cfg.jpegQuality || MATCH_IMAGE_DEFAULT_QUALITY) || MATCH_IMAGE_DEFAULT_QUALITY));
@@ -2771,6 +2853,7 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
         const out = canvas.toDataURL('image/jpeg', quality);
         const base64 = out.split(',')[1] || '';
         const imageId = createImageUploadId();
+        logImageDebug('compress done', {file:describeFile(file), id:imageId, width:w, height:h, base64Length:base64.length, approxSize:Math.round(base64.length * 3 / 4)});
         return {
           id: imageId,
           fileName: `${imageId}.jpg`,
@@ -2791,14 +2874,21 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
       const match = currentPredictionMatch();
       if(!match || !files || !files.length) return;
       const matchKey = matchCloudKey(match);
+      const selected = Array.from(files || []);
+      logImageDebug('upload selected', {matchKey, count:selected.length, files:selected.map(describeFile)});
       setMatchImageStatus(imageText('imageUploading'));
       return loadCloudConfig(true).then(cfg => {
         if(!cfg || !isCloudConfigReady(cfg)){
           setMatchImageStatus(imageText('imageConfigMissing'), 'error');
           return;
         }
-        const arr = Array.from(files).filter(f => /^image\//i.test(f.type || '') || /\.(png|jpe?g|webp|gif|heic)$/i.test(f.name || ''));
-        if(!arr.length){ setMatchImageStatus(imageText('imageUploadFail'), 'error'); return; }
+        logImageDebug('upload config ready', {enabled:cfg.enabled, workerBaseUrl:cfg.workerBaseUrl, imageRoot:cfg.imageRoot, passwordLength:String(cfg.appPassword || '').length, ready:isCloudConfigReady(cfg)});
+        const arr = selected;
+        if(!arr.length){
+          logImageDebug('upload aborted: no selected files', {}, 'warn');
+          setMatchImageStatus('没有选择文件，请重新选择图片。', 'error');
+          return;
+        }
         const jobs = arr.map(file => Promise.resolve(compressImageFile(file, cfg)));
         return Promise.all(jobs).then(images => {
           const validImages = images.filter(x => x && x.base64);
@@ -2809,9 +2899,11 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
           if(validImages.some(x => x.rawUpload)){
             setMatchImageStatus(imageText('imageEncodeFail'));
           }
-          logImageDebug('upload request', {matchKey, count:validImages.length, rawCount:validImages.filter(x => x.rawUpload).length, url:cloudApi(`/api/matches/${encodeURIComponent(matchKey)}/images`)});
+          const uploadUrl = cloudApi(`/api/matches/${encodeURIComponent(matchKey)}/images`);
+          const totalBase64 = validImages.reduce((sum, x) => sum + String(x.base64 || '').length, 0);
+          logImageDebug('upload request', {matchKey, count:validImages.length, rawCount:validImages.filter(x => x.rawUpload).length, url:uploadUrl, totalBase64Length:totalBase64, approxBytes:Math.round(totalBase64 * 3 / 4), files:validImages.map(x => ({id:x.id, fileName:x.fileName, contentType:x.contentType, size:x.size, originalName:x.originalName, originalSize:x.originalSize, rawUpload:!!x.rawUpload}))});
           return $.ajax({
-            url: cloudApi(`/api/matches/${encodeURIComponent(matchKey)}/images`),
+            url: uploadUrl,
             method: 'POST',
             contentType: 'application/json; charset=utf-8',
             dataType: 'json',
@@ -2821,8 +2913,8 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
             logImageDebug('upload done', res);
             setMatchImageStatus(imageText('imageUploadDone'), 'ok');
             loadMatchImages(match, true);
-          }).fail(xhr => {
-            logImageDebug('upload failed', xhr && {status:xhr.status, response:xhr.responseText});
+          }).fail((xhr, textStatus, errorThrown) => {
+            logImageDebug('upload failed', xhr && {status:xhr.status, statusText:xhr.statusText, textStatus, errorThrown, response:xhr.responseText}, 'error');
             setMatchImageStatus(ajaxErrorMessage(xhr, imageText('imageUploadFail')), 'error');
           });
         }).catch(err => {
