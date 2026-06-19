@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wc2026-pwa-v7-original-images';
+const CACHE_NAME = 'wc2026-pwa-v8-unlimited-zoom';
 const APP_SHELL = [
   './',
   './index.html',

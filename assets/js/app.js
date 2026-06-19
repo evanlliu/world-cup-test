@@ -12,15 +12,15 @@
     const TZ_MAIN = "America/Monterrey";
     const TZ_CHINA = "Asia/Shanghai";
     const CACHE_KEY = "wc2026_schedule_mobile_ui_v1";
-    const PREDICTION_CACHE_KEY = 'wc2026_prediction_cache_v7';
-    const SCORE_CACHE_KEY = "wc2026_score_cache_v7";
+    const PREDICTION_CACHE_KEY = 'wc2026_prediction_cache_v8';
+    const SCORE_CACHE_KEY = "wc2026_score_cache_v8";
     const SCORE_REFRESH_MS = 30000;
 
     // 比赛图片云端配置：不同设备打开时，会从 GitHub Pages 上的公开配置文件读取 Worker 地址和上传密码。
     // 注意：按你的要求 APP_PASSWORD 会放在 config.json 里，方便多设备免配置；这意味着知道页面地址的人也能看到密码。
     const CLOUD_CONFIG_URL = "./worldcup-cloud/config.json";
-    const CLOUD_CONFIG_CACHE_KEY = "wc2026_cloud_config_v7";
-    const MATCH_IMAGE_CACHE_PREFIX = "wc2026_match_images_v7_";
+    const CLOUD_CONFIG_CACHE_KEY = "wc2026_cloud_config_v8";
+    const MATCH_IMAGE_CACHE_PREFIX = "wc2026_match_images_v8_";
     const MATCH_IMAGE_DEFAULT_MAX_WIDTH = 1600;
     const MATCH_IMAGE_DEFAULT_QUALITY = 0.82;
 
@@ -106,13 +106,13 @@
     }
 
 
-    const APP_VERSION = "v7";
+    const APP_VERSION = "v8";
 
     const I18N = {
       zh: {
         htmlLang:"zh-CN",
         title:"2026 世界杯",
-        browserTitle:"2026 世界杯赛程 v7",
+        browserTitle:"2026 世界杯赛程 v8",
         pwaAppName:"世界杯2026",
         langZhLabel:"中文",
         langEnLabel:"英文",
@@ -178,7 +178,7 @@
       en: {
         htmlLang:"en",
         title:"World Cup 2026",
-        browserTitle:"World Cup 2026 Schedule v7",
+        browserTitle:"World Cup 2026 Schedule v8",
         pwaAppName:"World Cup 2026",
         langZhLabel:"Chinese",
         langEnLabel:"English",
@@ -244,7 +244,7 @@
       tr: {
         htmlLang:"tr",
         title:"2026 Dünya Kupası",
-        browserTitle:"2026 Dünya Kupası Programı v7",
+        browserTitle:"2026 Dünya Kupası Programı v8",
         pwaAppName:"Dünya Kupası 2026",
         langZhLabel:"Çince",
         langEnLabel:"İngilizce",
@@ -2764,7 +2764,7 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
       });
     }
     function compressImageFile(file, cfg){
-      // v7: keep the uploaded image as the original file.
+      // v8: keep original image quality and remove viewer zoom limit.
       // Do not use canvas/toDataURL compression, otherwise long screenshots become blurry after zooming.
       return rawImageFilePayload(file);
     }
@@ -2842,7 +2842,8 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
       return app.imageViewer;
     }
     function clampViewerScale(value){
-      return Math.max(1, Math.min(5, Number(value) || 1));
+      const n = Number(value);
+      return Number.isFinite(n) ? Math.max(1, n) : 1;
     }
     function applyViewerTransform(){
       const st = viewerState();
