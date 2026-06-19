@@ -2,7 +2,7 @@
 
 这是一个适合部署到 GitHub Pages 的 2026 世界杯赛程 PWA 页面，支持 PC 和手机端访问，也适合在 iPhone Safari 中“添加到主屏幕”当作 App 使用。
 
-当前版本：v98 比赛图片云端存储修正版  
+当前版本：v99 比赛图片云端存储正式版  
 基础优化来源：v94 刷新按钮图标版
 
 ---
@@ -277,7 +277,7 @@ v85 主要是低风险性能优化：
 - 在比赛预测详情页新增“比赛图片”模块。首页不加载图片，只有打开某场比赛后才加载该场图片。
 - 支持一次选择多张图片上传；前端会自动压缩为 JPG，默认最长边 1600px，质量 0.82。
 - 支持图片缩略图查看、点击放大、上一张/下一张、放大/缩小/还原、删除图片。
-- Service Worker 缓存名更新为 `wc2026-pwa-v98-match-images`。
+- Service Worker 缓存名更新为 `wc2026-pwa-v99-match-images`。
 
 ### 图片云端配置步骤
 
@@ -331,4 +331,11 @@ IMAGE_ROOT   worldcup-cloud/match-images
 - 上传时 Console 增加 `[match-images]` 调试日志。
 - 直播页也显示“比赛图片”模块。
 - 前端生成图片 `id`，删除和 manifest 维护更稳定。
-- 更新 Service Worker 缓存名为 `wc2026-pwa-v98-match-images`。
+- 更新 Service Worker 缓存名为 `wc2026-pwa-v99-match-images`。
+
+
+## v99 更新：移除上传调试面板
+
+- 保留 v98 已验证通过的比赛图片上传、读取、删除和查看功能。
+- 移除页面上的 Debug 按钮、调试日志面板和 Console 上传调试输出。
+- Service Worker 缓存名更新为 `wc2026-pwa-v99-match-images`。
