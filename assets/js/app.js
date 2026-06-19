@@ -106,14 +106,14 @@
     }
 
 
-    const APP_VERSION = "v99";
+    const APP_VERSION = "v100";
 
     const I18N = {
       zh: {
         htmlLang:"zh-CN",
         title:"2026 世界杯",
-        browserTitle:"2026 世界杯赛程 v99",
-        pwaAppName:"2026世界杯 v99",
+        browserTitle:"2026 世界杯赛程 v100",
+        pwaAppName:"2026世界杯 v100",
         langZhLabel:"中文",
         langEnLabel:"英文",
         langTrLabel:"土耳其语",
@@ -178,8 +178,8 @@
       en: {
         htmlLang:"en",
         title:"World Cup 2026",
-        browserTitle:"World Cup 2026 Schedule v99",
-        pwaAppName:"World Cup 2026 v99",
+        browserTitle:"World Cup 2026 Schedule v100",
+        pwaAppName:"World Cup 2026 v100",
         langZhLabel:"Chinese",
         langEnLabel:"English",
         langTrLabel:"Turkish",
@@ -244,8 +244,8 @@
       tr: {
         htmlLang:"tr",
         title:"2026 Dünya Kupası",
-        browserTitle:"2026 Dünya Kupası Programı v99",
-        pwaAppName:"Dünya Kupası 2026 v99",
+        browserTitle:"2026 Dünya Kupası Programı v100",
+        pwaAppName:"Dünya Kupası 2026 v100",
         langZhLabel:"Çince",
         langEnLabel:"İngilizce",
         langTrLabel:"Türkçe",
@@ -609,7 +609,7 @@
       cloudConfig: null,
       cloudConfigLoading: null,
       matchImages: {},
-      imageViewer: {key:'', index:0, scale:1}
+      imageViewer: {key:'', index:0, scale:1, x:0, y:0, touch:null}
     };
 
     function createMatchItem(raw, idx){
@@ -2842,8 +2842,8 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
         <div class="match-image-viewer hidden" id="matchImageViewer" aria-hidden="true">
           <div class="match-image-viewer-backdrop" data-viewer-action="close"></div>
           <div class="match-image-viewer-panel">
-            <button class="match-image-viewer-close" type="button" data-viewer-action="close">×</button>
-            <div class="match-image-viewer-stage"><img id="matchImageViewerImg" alt="${esc(imageText('imageOpen'))}"></div>
+            <button class="match-image-viewer-close" id="matchImageViewerClose" type="button" data-viewer-action="close" aria-label="${esc(imageText('imageClose'))}">×</button>
+            <div class="match-image-viewer-stage" id="matchImageViewerStage"><img id="matchImageViewerImg" alt="${esc(imageText('imageOpen'))}"></div>
             <div class="match-image-viewer-toolbar">
               <button type="button" data-viewer-action="prev">${esc(imageText('imagePrev'))}</button>
               <button type="button" data-viewer-action="zoomOut">−</button>
@@ -2853,10 +2853,32 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
             </div>
           </div>
         </div>`);
+      bindImageViewerTouchEvents();
     }
     function currentViewerImages(){
       const key = app.imageViewer.key;
       return (app.matchImages && app.matchImages[key]) || [];
+    }
+    function viewerState(){
+      if(!app.imageViewer) app.imageViewer = {key:'', index:0, scale:1, x:0, y:0, touch:null};
+      if(typeof app.imageViewer.scale !== 'number' || !isFinite(app.imageViewer.scale)) app.imageViewer.scale = 1;
+      if(typeof app.imageViewer.x !== 'number' || !isFinite(app.imageViewer.x)) app.imageViewer.x = 0;
+      if(typeof app.imageViewer.y !== 'number' || !isFinite(app.imageViewer.y)) app.imageViewer.y = 0;
+      return app.imageViewer;
+    }
+    function clampViewerScale(value){
+      return Math.max(1, Math.min(5, Number(value) || 1));
+    }
+    function applyViewerTransform(){
+      const st = viewerState();
+      if(st.scale <= 1.001){ st.scale = 1; st.x = 0; st.y = 0; }
+      $('#matchImageViewerImg').css('transform', `translate3d(${st.x}px, ${st.y}px, 0) scale(${st.scale})`);
+      $('#matchImageViewer').toggleClass('is-zoomed', st.scale > 1.001);
+    }
+    function resetViewerTransform(){
+      const st = viewerState();
+      st.scale = 1; st.x = 0; st.y = 0; st.touch = null;
+      applyViewerTransform();
     }
     function renderViewerImage(){
       const images = currentViewerImages();
@@ -2864,28 +2886,118 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
       if(!img) return;
       const path = img.path || img.githubPath || img.filePath || img.fileName || '';
       const url = `${cloudApi('/api/image')}?path=${encodeURIComponent(path)}&v=${encodeURIComponent(img.sha || img.updatedAt || img.createdAt || '')}`;
-      $('#matchImageViewerImg').attr('src', url).css('transform', `scale(${app.imageViewer.scale})`);
+      $('#matchImageViewerImg').attr('src', url);
+      applyViewerTransform();
     }
     function openImageViewer(matchKey, index){
       ensureImageViewer();
-      app.imageViewer = {key: matchKey, index: Number(index) || 0, scale: 1};
+      app.imageViewer = {key: matchKey, index: Number(index) || 0, scale: 1, x:0, y:0, touch:null};
       renderViewerImage();
-      $('#matchImageViewer').removeClass('hidden').attr('aria-hidden','false');
+      $('body').addClass('match-image-viewer-open');
+      $('#matchImageViewer').removeClass('hidden touching is-zoomed').attr('aria-hidden','false');
     }
     function closeImageViewer(){
-      $('#matchImageViewer').addClass('hidden').attr('aria-hidden','true');
-      $('#matchImageViewerImg').attr('src','');
+      $('body').removeClass('match-image-viewer-open');
+      $('#matchImageViewer').addClass('hidden').removeClass('touching is-zoomed').attr('aria-hidden','true');
+      $('#matchImageViewerImg').attr('src','').css('transform','');
+      if(app.imageViewer) app.imageViewer.touch = null;
     }
     function viewerMove(delta){
       const images = currentViewerImages();
       if(!images.length) return;
       app.imageViewer.index = (app.imageViewer.index + delta + images.length) % images.length;
       app.imageViewer.scale = 1;
+      app.imageViewer.x = 0;
+      app.imageViewer.y = 0;
+      app.imageViewer.touch = null;
       renderViewerImage();
     }
     function viewerZoom(delta){
-      app.imageViewer.scale = Math.max(0.5, Math.min(4, (app.imageViewer.scale || 1) + delta));
-      $('#matchImageViewerImg').css('transform', `scale(${app.imageViewer.scale})`);
+      const st = viewerState();
+      st.scale = clampViewerScale((st.scale || 1) + delta);
+      if(st.scale <= 1.001){ st.x = 0; st.y = 0; }
+      applyViewerTransform();
+    }
+    function touchDistance(touches){
+      if(!touches || touches.length < 2) return 0;
+      const a = touches[0], b = touches[1];
+      const dx = b.clientX - a.clientX;
+      const dy = b.clientY - a.clientY;
+      return Math.sqrt(dx * dx + dy * dy);
+    }
+    function touchMidpoint(touches){
+      if(!touches || touches.length < 2) return {x:0,y:0};
+      return {x:(touches[0].clientX + touches[1].clientX) / 2, y:(touches[0].clientY + touches[1].clientY) / 2};
+    }
+    function bindImageViewerTouchEvents(){
+      if(window.__matchImageViewerTouchReady) return;
+      const stage = document.getElementById('matchImageViewerStage');
+      if(!stage) return;
+      window.__matchImageViewerTouchReady = true;
+      stage.addEventListener('touchstart', function(e){
+        if($('#matchImageViewer').hasClass('hidden')) return;
+        const st = viewerState();
+        if(e.touches && e.touches.length >= 2){
+          e.preventDefault();
+          const mid = touchMidpoint(e.touches);
+          st.touch = {mode:'pinch', startDistance:touchDistance(e.touches), startScale:st.scale || 1, startX:st.x || 0, startY:st.y || 0, startMidX:mid.x, startMidY:mid.y};
+          $('#matchImageViewer').addClass('touching');
+        }else if(e.touches && e.touches.length === 1){
+          const t0 = e.touches[0];
+          st.touch = {mode:'pan', startClientX:t0.clientX, startClientY:t0.clientY, startX:st.x || 0, startY:st.y || 0};
+          $('#matchImageViewer').addClass('touching');
+        }
+      }, {passive:false});
+      stage.addEventListener('touchmove', function(e){
+        if($('#matchImageViewer').hasClass('hidden')) return;
+        const st = viewerState();
+        if(e.touches && e.touches.length >= 2){
+          e.preventDefault();
+          if(!st.touch || st.touch.mode !== 'pinch'){
+            const mid0 = touchMidpoint(e.touches);
+            st.touch = {mode:'pinch', startDistance:touchDistance(e.touches), startScale:st.scale || 1, startX:st.x || 0, startY:st.y || 0, startMidX:mid0.x, startMidY:mid0.y};
+          }
+          const dist = touchDistance(e.touches);
+          const startDist = Math.max(1, st.touch.startDistance || dist || 1);
+          const mid = touchMidpoint(e.touches);
+          st.scale = clampViewerScale((st.touch.startScale || 1) * (dist / startDist));
+          if(st.scale > 1.001){
+            st.x = (st.touch.startX || 0) + (mid.x - (st.touch.startMidX || mid.x));
+            st.y = (st.touch.startY || 0) + (mid.y - (st.touch.startMidY || mid.y));
+          }else{
+            st.x = 0; st.y = 0;
+          }
+          applyViewerTransform();
+        }else if(e.touches && e.touches.length === 1 && st.touch && st.touch.mode === 'pan'){
+          if((st.scale || 1) <= 1.001) return;
+          e.preventDefault();
+          const t0 = e.touches[0];
+          st.x = (st.touch.startX || 0) + (t0.clientX - st.touch.startClientX);
+          st.y = (st.touch.startY || 0) + (t0.clientY - st.touch.startClientY);
+          applyViewerTransform();
+        }
+      }, {passive:false});
+      stage.addEventListener('touchend', function(e){
+        const st = viewerState();
+        if(e.touches && e.touches.length === 1){
+          const t0 = e.touches[0];
+          st.touch = {mode:'pan', startClientX:t0.clientX, startClientY:t0.clientY, startX:st.x || 0, startY:st.y || 0};
+        }else{
+          st.touch = null;
+          $('#matchImageViewer').removeClass('touching');
+        }
+      }, {passive:false});
+      stage.addEventListener('touchcancel', function(){
+        const st = viewerState();
+        st.touch = null;
+        $('#matchImageViewer').removeClass('touching');
+      }, {passive:false});
+      stage.addEventListener('dblclick', function(e){
+        e.preventDefault();
+        const st = viewerState();
+        if(st.scale > 1.001) resetViewerTransform();
+        else { st.scale = 2; st.x = 0; st.y = 0; applyViewerTransform(); }
+      });
     }
     function deleteMatchImage(index){
       const match = currentPredictionMatch();
@@ -3237,6 +3349,9 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
         const t0 = e.touches && e.touches[0];
         if(!t0 || !target) return;
 
+        // 图片查看器打开时，由查看器自己处理手势，避免全局滚动保护拦截双指缩放/关闭按钮。
+        if(target.closest && target.closest('#matchImageViewer')) return;
+
         // AI预测页打开时，只允许 AI 页面内容区域滚动。
         if($('#predictionPage').length && !$('#predictionPage').hasClass('hidden')){
           if(target.closest && target.closest('.prediction-scroll')) return;
@@ -3407,13 +3522,22 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
       $(document).on('click', '.match-image-delete', function(e){ e.preventDefault(); e.stopPropagation(); deleteMatchImage($(this).data('image-index')); });
       $(document).on('click', '[data-viewer-action]', function(e){
         e.preventDefault();
+        e.stopPropagation();
         const action = $(this).data('viewer-action');
         if(action === 'close') closeImageViewer();
         else if(action === 'prev') viewerMove(-1);
         else if(action === 'next') viewerMove(1);
         else if(action === 'zoomIn') viewerZoom(0.25);
         else if(action === 'zoomOut') viewerZoom(-0.25);
-        else if(action === 'reset'){ app.imageViewer.scale = 1; renderViewerImage(); }
+        else if(action === 'reset') resetViewerTransform();
+      });
+      $(document).on('touchend pointerup', '#matchImageViewerClose,.match-image-viewer-backdrop', function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        closeImageViewer();
+      });
+      $(document).on('keydown', function(e){
+        if(e.key === 'Escape' && $('#matchImageViewer').length && !$('#matchImageViewer').hasClass('hidden')) closeImageViewer();
       });
       $(document).on('wheel', '#matchImageViewer .match-image-viewer-stage', function(e){
         e.preventDefault();

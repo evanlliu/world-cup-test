@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wc2026-pwa-v99-match-images';
+const CACHE_NAME = 'wc2026-pwa-v100-match-images-touch';
 const APP_SHELL = [
   './',
   './index.html',
