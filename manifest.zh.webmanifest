@@ -1,7 +1,7 @@
 {
-  "name": "世界杯2026",
-  "short_name": "世界杯2026",
-  "description": "2026 世界杯赛程，支持北京和蒙特雷时间自动切换。",
+  "name": "Dünya Kupası 2026",
+  "short_name": "Dünya Kupası",
+  "description": "Pekin ve Monterrey saatlerini otomatik gösteren 2026 Dünya Kupası programı.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
