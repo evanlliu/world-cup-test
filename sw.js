@@ -1,11 +1,11 @@
-const CACHE_NAME = 'wc2026-pwa-v2-compact-hero';
+const CACHE_NAME = 'wc2026-pwa-v3-odds-images';
 const APP_SHELL = [
   './',
   './index.html',
-  './assets/css/app.css?v=2',
-  './assets/js/app.js?v=2',
-  './assets/prediction-hero-bg.jpg?v=2',
-  './worldcup-cloud/config.json?v=2',
+  './assets/css/app.css?v=3',
+  './assets/js/app.js?v=3',
+  './assets/prediction-hero-bg.jpg?v=3',
+  './worldcup-cloud/config.json?v=3',
   './manifest.webmanifest',
   './manifest.zh.webmanifest',
   './manifest.en.webmanifest',

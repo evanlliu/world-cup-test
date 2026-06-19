@@ -19,8 +19,8 @@
     // 比赛图片云端配置：不同设备打开时，会从 GitHub Pages 上的公开配置文件读取 Worker 地址和上传密码。
     // 注意：按你的要求 APP_PASSWORD 会放在 config.json 里，方便多设备免配置；这意味着知道页面地址的人也能看到密码。
     const CLOUD_CONFIG_URL = "./worldcup-cloud/config.json";
-    const CLOUD_CONFIG_CACHE_KEY = "wc2026_cloud_config_v2";
-    const MATCH_IMAGE_CACHE_PREFIX = "wc2026_match_images_v2_";
+    const CLOUD_CONFIG_CACHE_KEY = "wc2026_cloud_config_v3";
+    const MATCH_IMAGE_CACHE_PREFIX = "wc2026_match_images_v3_";
     const MATCH_IMAGE_DEFAULT_MAX_WIDTH = 1600;
     const MATCH_IMAGE_DEFAULT_QUALITY = 0.82;
 
@@ -106,14 +106,14 @@
     }
 
 
-    const APP_VERSION = "v2";
+    const APP_VERSION = "v3";
 
     const I18N = {
       zh: {
         htmlLang:"zh-CN",
         title:"2026 世界杯",
-        browserTitle:"2026 世界杯赛程 v2",
-        pwaAppName:"2026世界杯 v2",
+        browserTitle:"2026 世界杯赛程 v3",
+        pwaAppName:"2026世界杯 v3",
         langZhLabel:"中文",
         langEnLabel:"英文",
         langTrLabel:"土耳其语",
@@ -173,13 +173,13 @@
         rankTitle:"排名", teamHeader:"球队", playerBoardTitle:"球员榜", playerBoardHint:"优先读取实时接口返回的进球事件；没有球员明细时会提示等待数据。", goalsHeader:"进球", assistsHeader:"助攻", matchesHeader:"比赛", playerDataWaiting:"暂无球员明细数据，开赛后如实时接口返回进球球员会自动汇总。",
         teamBoardTitle:"球队榜", teamBoardHint:"综合积分、净胜球、进球数和基础实力生成，方便快速查看当前表现。", ratingHeader:"综合", powerHeader:"实力", rankHeader:"排名",
         bracketTitle:"晋级图", bracketHint:"按淘汰赛赛程自动展示；小组名次会尽量根据当前积分榜解析，未确定时显示占位。", undecided:"待定", winnerOf:"胜者", loserOf:"负者", bestThird:"最佳第3",
-        matchImages:"比赛图片", matchImagesHint:"图片按比赛存放到 GitHub；进入本场比赛后才加载，不影响首页打开速度。", uploadImages:"上传图片", refreshImages:"刷新", imageConfigMissing:"图片云端还没有配置，请先修改 worldcup-cloud/config.json。", imageLoading:"图片加载中...", imageEmpty:"本场比赛暂无图片", imageUploadReady:"可一次选择多张图片上传", imageUploading:"正在上传图片...", imageUploadDone:"上传完成", imageUploadFail:"上传失败，请检查 Worker 地址、密码和 GitHub Token。", imageEncodeFail:"图片压缩失败，已尝试原图上传；如仍失败，请换 JPG/PNG 图片。", imageLoadFail:"图片加载失败，请检查 Worker 和 GitHub 配置。", imageOpen:"查看图片", imagePrev:"上一张", imageNext:"下一张", imageZoomIn:"放大", imageZoomOut:"缩小", imageReset:"还原", imageClose:"关闭", imageDelete:"删除", imageDeleteConfirm:"确定删除这张图片吗？"
+        matchImages:"赔率图片", matchImagesHint:"赔率截图按比赛存放到 GitHub；进入赔率页后才加载，不影响首页和前瞻打开速度。", uploadImages:"上传赔率图", refreshImages:"刷新", imageConfigMissing:"图片云端还没有配置，请先修改 worldcup-cloud/config.json。", imageLoading:"图片加载中...", imageEmpty:"本场比赛暂无图片", imageUploadReady:"可一次选择多张图片上传", imageUploading:"正在上传图片...", imageUploadDone:"上传完成", imageUploadFail:"上传失败，请检查 Worker 地址、密码和 GitHub Token。", imageEncodeFail:"图片压缩失败，已尝试原图上传；如仍失败，请换 JPG/PNG 图片。", imageLoadFail:"图片加载失败，请检查 Worker 和 GitHub 配置。", imageOpen:"查看图片", imagePrev:"上一张", imageNext:"下一张", imageZoomIn:"放大", imageZoomOut:"缩小", imageReset:"还原", imageClose:"关闭", imageDelete:"删除", imageDeleteConfirm:"确定删除这张图片吗？"
       },
       en: {
         htmlLang:"en",
         title:"World Cup 2026",
-        browserTitle:"World Cup 2026 Schedule v2",
-        pwaAppName:"World Cup 2026 v2",
+        browserTitle:"World Cup 2026 Schedule v3",
+        pwaAppName:"World Cup 2026 v3",
         langZhLabel:"Chinese",
         langEnLabel:"English",
         langTrLabel:"Turkish",
@@ -239,13 +239,13 @@
         rankTitle:"Rank", teamHeader:"Team", playerBoardTitle:"Top Players", playerBoardHint:"Goal events are read from the live feed when available. If player details are not returned yet, this page shows a waiting notice.", goalsHeader:"Goals", assistsHeader:"Assists", matchesHeader:"Matches", playerDataWaiting:"No player detail is available yet. Once the live feed returns scorers, they will be summarized automatically.",
         teamBoardTitle:"Team Ranking", teamBoardHint:"Ranking combines points, goal difference, goals scored and baseline team strength.", ratingHeader:"Rating", powerHeader:"Power", rankHeader:"Rank",
         bracketTitle:"Bracket", bracketHint:"Knockout fixtures are shown automatically. Group placeholders are resolved from current standings when possible.", undecided:"TBD", winnerOf:"Winner", loserOf:"Loser", bestThird:"Best 3rd",
-        matchImages:"Match Images", matchImagesHint:"Images are stored on GitHub by match and loaded only after you open this match.", uploadImages:"Upload images", refreshImages:"Refresh", imageConfigMissing:"Cloud image storage is not configured. Please edit worldcup-cloud/config.json first.", imageLoading:"Loading images...", imageEmpty:"No images for this match yet", imageUploadReady:"Select multiple images at once", imageUploading:"Uploading images...", imageUploadDone:"Upload complete", imageUploadFail:"Upload failed. Check Worker URL, password and GitHub token.", imageEncodeFail:"Image compression failed, trying original file upload. Use JPG/PNG if it still fails.", imageLoadFail:"Could not load images. Check Worker and GitHub settings.", imageOpen:"View image", imagePrev:"Previous", imageNext:"Next", imageZoomIn:"Zoom in", imageZoomOut:"Zoom out", imageReset:"Reset", imageClose:"Close", imageDelete:"Delete", imageDeleteConfirm:"Delete this image?"
+        matchImages:"Odds Images", matchImagesHint:"Odds screenshots are stored on GitHub by match and loaded only after you open the Odds tab.", uploadImages:"Upload odds", refreshImages:"Refresh", imageConfigMissing:"Cloud image storage is not configured. Please edit worldcup-cloud/config.json first.", imageLoading:"Loading images...", imageEmpty:"No images for this match yet", imageUploadReady:"Select multiple images at once", imageUploading:"Uploading images...", imageUploadDone:"Upload complete", imageUploadFail:"Upload failed. Check Worker URL, password and GitHub token.", imageEncodeFail:"Image compression failed, trying original file upload. Use JPG/PNG if it still fails.", imageLoadFail:"Could not load images. Check Worker and GitHub settings.", imageOpen:"View image", imagePrev:"Previous", imageNext:"Next", imageZoomIn:"Zoom in", imageZoomOut:"Zoom out", imageReset:"Reset", imageClose:"Close", imageDelete:"Delete", imageDeleteConfirm:"Delete this image?"
       },
       tr: {
         htmlLang:"tr",
         title:"2026 Dünya Kupası",
-        browserTitle:"2026 Dünya Kupası Programı v2",
-        pwaAppName:"Dünya Kupası 2026 v2",
+        browserTitle:"2026 Dünya Kupası Programı v3",
+        pwaAppName:"Dünya Kupası 2026 v3",
         langZhLabel:"Çince",
         langEnLabel:"İngilizce",
         langTrLabel:"Türkçe",
@@ -305,14 +305,14 @@
         rankTitle:"Sıra", teamHeader:"Takım", playerBoardTitle:"Oyuncu Sıralaması", playerBoardHint:"Canlı veri gol olaylarını döndürdüğünde oyuncu istatistikleri otomatik özetlenir.", goalsHeader:"Gol", assistsHeader:"Asist", matchesHeader:"Maç", playerDataWaiting:"Henüz oyuncu detayı yok. Canlı veri golcüleri döndürdüğünde otomatik listelenecek.",
         teamBoardTitle:"Takım Sıralaması", teamBoardHint:"Sıralama puan, averaj, atılan gol ve temel takım gücünü birlikte değerlendirir.", ratingHeader:"Puan", powerHeader:"Güç", rankHeader:"Sıra",
         bracketTitle:"Eleme Ağacı", bracketHint:"Eleme maçları otomatik gösterilir; grup yer tutucuları mümkün olduğunda güncel puan durumundan çözülür.", undecided:"Belli değil", winnerOf:"Kazanan", loserOf:"Kaybeden", bestThird:"En iyi 3.",
-        matchImages:"Maç Görselleri", matchImagesHint:"Görseller maç bazında GitHub üzerinde saklanır ve yalnızca bu maçı açınca yüklenir.", uploadImages:"Görsel yükle", refreshImages:"Yenile", imageConfigMissing:"Bulut görsel depolama yapılandırılmadı. Lütfen önce worldcup-cloud/config.json dosyasını düzenleyin.", imageLoading:"Görseller yükleniyor...", imageEmpty:"Bu maç için henüz görsel yok", imageUploadReady:"Birden fazla görsel seçebilirsiniz", imageUploading:"Görseller yükleniyor...", imageUploadDone:"Yükleme tamamlandı", imageUploadFail:"Yükleme başarısız. Worker adresi, parola ve GitHub tokenı kontrol edin.", imageEncodeFail:"Görsel sıkıştırılamadı, orijinal dosya yükleniyor. Hâlâ başarısızsa JPG/PNG deneyin.", imageLoadFail:"Görseller yüklenemedi. Worker ve GitHub ayarlarını kontrol edin.", imageOpen:"Görseli görüntüle", imagePrev:"Önceki", imageNext:"Sonraki", imageZoomIn:"Yakınlaştır", imageZoomOut:"Uzaklaştır", imageReset:"Sıfırla", imageClose:"Kapat", imageDelete:"Sil", imageDeleteConfirm:"Bu görsel silinsin mi?"
+        matchImages:"Oran Görselleri", matchImagesHint:"Oran ekran görüntüleri maç bazında GitHub üzerinde saklanır ve yalnızca Oran sekmesi açılınca yüklenir.", uploadImages:"Oran görseli yükle", refreshImages:"Yenile", imageConfigMissing:"Bulut görsel depolama yapılandırılmadı. Lütfen önce worldcup-cloud/config.json dosyasını düzenleyin.", imageLoading:"Görseller yükleniyor...", imageEmpty:"Bu maç için henüz görsel yok", imageUploadReady:"Birden fazla görsel seçebilirsiniz", imageUploading:"Görseller yükleniyor...", imageUploadDone:"Yükleme tamamlandı", imageUploadFail:"Yükleme başarısız. Worker adresi, parola ve GitHub tokenı kontrol edin.", imageEncodeFail:"Görsel sıkıştırılamadı, orijinal dosya yükleniyor. Hâlâ başarısızsa JPG/PNG deneyin.", imageLoadFail:"Görseller yüklenemedi. Worker ve GitHub ayarlarını kontrol edin.", imageOpen:"Görseli görüntüle", imagePrev:"Önceki", imageNext:"Sonraki", imageZoomIn:"Yakınlaştır", imageZoomOut:"Uzaklaştır", imageReset:"Sıfırla", imageClose:"Kapat", imageDelete:"Sil", imageDeleteConfirm:"Bu görsel silinsin mi?"
       }
     };
 
 
     const PRED_I18N = {
       zh:{
-        predictMatch:"预测比赛", actualScore:"实际比分", previewTab:"前瞻", liveTab:"直播", aiTitle:"智能预测",
+        predictMatch:"预测比赛", actualScore:"实际比分", previewTab:"前瞻", liveTab:"赔率", aiTitle:"智能预测",
         winPrediction:"胜率预测", homeWin:"主胜", awayWin:"客胜", draw:"平局", favoredDirection:"更看好", mainPick:"主推", secondPick:"次选", upsetWatch:"防冷", drawGuard:"防平", topTwo:"主推2个", coldThree:"防冷3个", leadingNow:"当前领先", finalResult:"最终结果",
         normalScores:"主推比分", upsetScores:"防冷比分", aiConclusion:"AI预测", moreAnalysis:"更多分析", reasonOne:"关键判断", coreFactors:"核心因素", worldRank:"近四届世界杯排名", rankLabel:"近四届排名", strengthLabel:"实力", venueLabel:"场地", fifaRankNote:"",
         modelScore:"模型评分", attack:"进攻倾向", defense:"防守稳定", venue:"比赛环境",
@@ -323,7 +323,7 @@
         liveSoon:"直播页已接入当前比分和事件。"
       },
       en:{
-        predictMatch:"Predict Match", actualScore:"Actual Score", previewTab:"Preview", liveTab:"Live", aiTitle:"AI Prediction",
+        predictMatch:"Predict Match", actualScore:"Actual Score", previewTab:"Preview", liveTab:"Odds", aiTitle:"AI Prediction",
         winPrediction:"Win Probability", homeWin:"Home", awayWin:"Away", draw:"Draw", favoredDirection:"Favored side", mainPick:"Main", secondPick:"Alt", upsetWatch:"Upset", drawGuard:"Draw", topTwo:"Top 2 picks", coldThree:"3 hedge picks", leadingNow:"Leading now", finalResult:"Final result",
         normalScores:"Main score picks", upsetScores:"Upset protection", aiConclusion:"AI Prediction", moreAnalysis:"More analysis", reasonOne:"Key logic", coreFactors:"Key factors", worldRank:"Recent World Cup ranks", rankLabel:"Recent WCs", strengthLabel:"Strength", venueLabel:"Venue", fifaRankNote:"",
         modelScore:"Model rating", attack:"Attack trend", defense:"Defensive stability", venue:"Match context",
@@ -334,7 +334,7 @@
         liveSoon:"Live score and event view is connected."
       },
       tr:{
-        predictMatch:"Maçı Tahmin Et", actualScore:"Gerçek Skor", previewTab:"Ön izleme", liveTab:"Canlı", aiTitle:"Yapay Zekâ Tahmini",
+        predictMatch:"Maçı Tahmin Et", actualScore:"Gerçek Skor", previewTab:"Ön izleme", liveTab:"Oran", aiTitle:"Yapay Zekâ Tahmini",
         winPrediction:"Kazanma Olasılığı", homeWin:"Ev", awayWin:"Deplasman", draw:"Beraberlik", favoredDirection:"Öne çıkan taraf", mainPick:"Ana", secondPick:"2. tercih", upsetWatch:"Sürpriz", drawGuard:"Beraberlik", topTwo:"En iyi 2 skor", coldThree:"3 sürpriz skor", leadingNow:"Şu an önde", finalResult:"Nihai sonuç",
         normalScores:"Ana skorlar", upsetScores:"Sürpriz koruması", aiConclusion:"Yapay Zekâ Tahmini", moreAnalysis:"Daha fazla analiz", reasonOne:"Ana mantık", coreFactors:"Temel faktörler", worldRank:"Son Dünya Kupası sıraları", rankLabel:"Son DK", strengthLabel:"Güç", venueLabel:"Saha", fifaRankNote:"",
         modelScore:"Model puanı", attack:"Hücum eğilimi", defense:"Savunma dengesi", venue:"Maç ortamı",
@@ -3074,7 +3074,7 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
         </div>
       `);
       if(app.predictionTab === 'live'){
-        $('#predictionContent').html(renderPredictionLiveContent(match, score, st) + renderMatchImagesShell(match));
+        $('#predictionContent').html(renderMatchImagesShell(match));
         initMatchImages(match);
         return;
       }
@@ -3202,12 +3202,10 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
             </div>
           </div>
         </details>
-        ${renderMatchImagesShell(match)}
         <section class="prediction-card">
           <p class="prediction-disclaimer">${esc(pt('disclaimer'))}</p>
         </section>
       `);
-      initMatchImages(match);
     }
     function openPredictionPage(idx){
       app.predictionIndex = Number(idx);
@@ -3513,7 +3511,7 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
       });
       $('#predictionBackBtn').on('click', closePredictionPage);
       $('#predictionPreviewTab').on('click', ()=>{ app.predictionTab = 'preview'; renderPredictionPage(); });
-      $('#predictionLiveTab').on('click', ()=>{ app.predictionTab = 'live'; renderPredictionPage(); refreshPredictionLiveData(); });
+      $('#predictionLiveTab').on('click', ()=>{ app.predictionTab = 'live'; renderPredictionPage(); });
       $(document).on('click', '#predictionLiveRefreshBtn', function(e){ e.preventDefault(); refreshPredictionLiveData(); });
       $(document).on('click', '#matchImageUploadBtn', function(e){ e.preventDefault(); $('#matchImageFileInput').trigger('click'); });
       $(document).on('change', '#matchImageFileInput', function(){ uploadMatchImages(this.files); this.value = ''; });
