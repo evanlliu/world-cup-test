@@ -14,11 +14,11 @@ const CORS_HEADERS = {
 function json(data, status = 200){
   return new Response(JSON.stringify(data, null, 2), {
     status,
-    headers: {'Content-Type':'application/json; charset=utf-8', ...CORS_HEADERS}
+    headers: {'Content-Type':'application/json; charset=utf-8', 'Cache-Control':'no-store, no-cache, must-revalidate', ...CORS_HEADERS}
   });
 }
 function text(data, status = 200){
-  return new Response(data, {status, headers: {'Content-Type':'text/plain; charset=utf-8', ...CORS_HEADERS}});
+  return new Response(data, {status, headers: {'Content-Type':'text/plain; charset=utf-8', 'Cache-Control':'no-store, no-cache, must-revalidate', ...CORS_HEADERS}});
 }
 function cleanSlash(value){ return String(value || '').replace(/^\/+|\/+$/g, ''); }
 function envValue(env, key, fallback = ''){ return String(env && env[key] ? env[key] : fallback); }
@@ -229,7 +229,8 @@ async function readImage(request, env){
   if(!res.ok) return text(`GitHub image read failed: ${res.status}`, 502);
   const headers = new Headers(CORS_HEADERS);
   headers.set('Content-Type', extContentType(path));
-  headers.set('Cache-Control', 'public, max-age=31536000, immutable');
+  headers.set('Cache-Control', 'no-store, no-cache, must-revalidate');
+  headers.set('Pragma', 'no-cache');
 
   const contentType = res.headers.get('Content-Type') || '';
   if(contentType.includes('application/json')){

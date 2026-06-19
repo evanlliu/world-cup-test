@@ -1,11 +1,11 @@
-const CACHE_NAME = 'wc2026-pwa-v8-unlimited-zoom';
+const CACHE_NAME = 'wc2026-pwa-v9-clear-original-viewer';
 const APP_SHELL = [
   './',
   './index.html',
-  './assets/css/app.css?v=7',
-  './assets/js/app.js?v=7',
-  './assets/prediction-hero-bg.jpg?v=7',
-  './worldcup-cloud/config.json?v=7',
+  './assets/css/app.css?v=9',
+  './assets/js/app.js?v=9',
+  './assets/prediction-hero-bg.jpg?v=9',
+  './worldcup-cloud/config.json?v=9',
   './manifest.webmanifest',
   './manifest.zh.webmanifest',
   './manifest.en.webmanifest',
@@ -33,7 +33,7 @@ self.addEventListener('fetch', event => {
 
   // 赛程、实时比分、图片 Worker、云端配置走网络优先，避免比分和图片配置变旧。
   if (url.pathname.includes('/worldcup-cloud/config.json') || url.hostname.includes('raw.githubusercontent.com') || url.hostname.includes('espn.com') || url.hostname.includes('allorigins.win') || url.hostname.includes('corsproxy.io') || url.hostname.includes('r.jina.ai') || url.hostname.includes('workers.dev')) {
-    event.respondWith(fetch(event.request).catch(() => caches.match(event.request, {ignoreSearch:true})));
+    event.respondWith(fetch(event.request, {cache:'no-store'}).catch(() => caches.match(event.request, {ignoreSearch:true})));
     return;
   }
 

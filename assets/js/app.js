@@ -12,15 +12,15 @@
     const TZ_MAIN = "America/Monterrey";
     const TZ_CHINA = "Asia/Shanghai";
     const CACHE_KEY = "wc2026_schedule_mobile_ui_v1";
-    const PREDICTION_CACHE_KEY = 'wc2026_prediction_cache_v8';
-    const SCORE_CACHE_KEY = "wc2026_score_cache_v8";
+    const PREDICTION_CACHE_KEY = 'wc2026_prediction_cache_v9';
+    const SCORE_CACHE_KEY = "wc2026_score_cache_v9";
     const SCORE_REFRESH_MS = 30000;
 
     // 比赛图片云端配置：不同设备打开时，会从 GitHub Pages 上的公开配置文件读取 Worker 地址和上传密码。
     // 注意：按你的要求 APP_PASSWORD 会放在 config.json 里，方便多设备免配置；这意味着知道页面地址的人也能看到密码。
     const CLOUD_CONFIG_URL = "./worldcup-cloud/config.json";
-    const CLOUD_CONFIG_CACHE_KEY = "wc2026_cloud_config_v8";
-    const MATCH_IMAGE_CACHE_PREFIX = "wc2026_match_images_v8_";
+    const CLOUD_CONFIG_CACHE_KEY = "wc2026_cloud_config_v9";
+    const MATCH_IMAGE_CACHE_PREFIX = "wc2026_match_images_v9_";
     const MATCH_IMAGE_DEFAULT_MAX_WIDTH = 1600;
     const MATCH_IMAGE_DEFAULT_QUALITY = 0.82;
 
@@ -106,13 +106,13 @@
     }
 
 
-    const APP_VERSION = "v8";
+    const APP_VERSION = "v9";
 
     const I18N = {
       zh: {
         htmlLang:"zh-CN",
         title:"2026 世界杯",
-        browserTitle:"2026 世界杯赛程 v8",
+        browserTitle:"2026 世界杯赛程 v9",
         pwaAppName:"世界杯2026",
         langZhLabel:"中文",
         langEnLabel:"英文",
@@ -178,7 +178,7 @@
       en: {
         htmlLang:"en",
         title:"World Cup 2026",
-        browserTitle:"World Cup 2026 Schedule v8",
+        browserTitle:"World Cup 2026 Schedule v9",
         pwaAppName:"World Cup 2026",
         langZhLabel:"Chinese",
         langEnLabel:"English",
@@ -244,7 +244,7 @@
       tr: {
         htmlLang:"tr",
         title:"2026 Dünya Kupası",
-        browserTitle:"2026 Dünya Kupası Programı v8",
+        browserTitle:"2026 Dünya Kupası Programı v9",
         pwaAppName:"Dünya Kupası 2026",
         langZhLabel:"Çince",
         langEnLabel:"İngilizce",
@@ -2542,6 +2542,11 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
       const sep = String(url || '').includes('?') ? '&' : '?';
       return `${url}${sep}_=${Date.now()}`;
     }
+    function cloudImageUrl(path, img, mode='view'){
+      const version = img && (img.sha || img.updatedAt || img.createdAt || img.size || '');
+      const base = `${cloudApi('/api/image')}?path=${encodeURIComponent(path || '')}`;
+      return `${base}&v=${encodeURIComponent(version)}&mode=${encodeURIComponent(mode)}&_=${Date.now()}`;
+    }
     function ajaxErrorMessage(xhr, fallback){
       const status = xhr && xhr.status ? `HTTP ${xhr.status}` : '';
       let msg = '';
@@ -2633,10 +2638,10 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
       const html = list.map((img, idx) => {
         const path = img.path || img.githubPath || img.filePath || img.fileName || '';
         const title = img.createdAt ? formatImageTime(img.createdAt) : (img.fileName || img.id || '');
-        const url = `${cloudApi('/api/image')}?path=${encodeURIComponent(path)}&v=${encodeURIComponent(img.sha || img.updatedAt || img.createdAt || '')}`;
+        const url = cloudImageUrl(path, img, 'thumb');
         return `<div class="match-image-item" data-image-index="${idx}" title="${esc(title)}">
           <button class="match-image-thumb" type="button" data-image-index="${idx}" aria-label="${esc(imageText('imageOpen'))}">
-            <img src="${esc(url)}" alt="${esc(imageText('imageOpen'))}" loading="lazy">
+            <img src="${esc(url)}" alt="${esc(imageText('imageOpen'))}" loading="lazy" decoding="async">
           </button>
           <div class="match-image-meta">
             <span>${esc(title || imageText('matchImages'))}</span>
@@ -2658,27 +2663,24 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
     }
     function loadMatchImages(match, force=false){
       const matchKey = matchCloudKey(match);
+      // v9: every time the odds/image tab opens, always request the latest manifest from Worker/GitHub.
+      // Do not preload stale localStorage image manifests, otherwise deleted/replaced screenshots may look old.
       setMatchImageStatus(imageText('imageLoading'));
-      if(!force){
-        try{
-          const cached = JSON.parse(localStorage.getItem(imageCacheKey(matchKey)) || 'null');
-          if(cached && Array.isArray(cached.images)){ app.matchImages[matchKey] = cached.images; renderMatchImageGrid(matchKey, cached.images); }
-        }catch(e){}
-      }
+      renderMatchImageGrid(matchKey, []);
       return loadCloudConfig(force || !isCloudConfigReady(app.cloudConfig)).then(cfg => {
         if(!cfg || cfg.enabled === false || !isCloudConfigReady(cfg)){
           setMatchImageStatus(imageText('imageConfigMissing'), 'error');
           renderMatchImageGrid(matchKey, []);
           return;
         }
-        const listUrl = cloudApi(`/api/matches/${encodeURIComponent(matchKey)}/images`);
+        const listUrl = withCacheBust(cloudApi(`/api/matches/${encodeURIComponent(matchKey)}/images`));
         return $.ajax({url:listUrl, dataType:'json', cache:false, timeout:15000})
           .done(res => {
             const active = $('.match-images-card').data('match-key');
             if(active && String(active) !== matchKey) return;
             const images = Array.isArray(res && res.images) ? res.images : [];
             app.matchImages[matchKey] = images;
-            try{ localStorage.setItem(imageCacheKey(matchKey), JSON.stringify({updatedAt:new Date().toISOString(), images})); }catch(e){}
+            try{ localStorage.removeItem(imageCacheKey(matchKey)); }catch(e){}
             setMatchImageStatus(images.length ? imageText('imageUploadReady') : imageText('imageEmpty'), images.length ? 'ok' : '');
             renderMatchImageGrid(matchKey, images);
           })
@@ -2764,7 +2766,7 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
       });
     }
     function compressImageFile(file, cfg){
-      // v8: keep original image quality and remove viewer zoom limit.
+      // v9: keep original image quality. Image viewer renders from natural pixels, not thumbnail/cache.
       // Do not use canvas/toDataURL compression, otherwise long screenshots become blurry after zooming.
       return rawImageFilePayload(file);
     }
@@ -2845,10 +2847,38 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
       const n = Number(value);
       return Number.isFinite(n) ? Math.max(1, n) : 1;
     }
+    function viewerStageRect(){
+      const stage = document.getElementById('matchImageViewerStage');
+      return stage ? stage.getBoundingClientRect() : {left:0, top:0, width:1, height:1};
+    }
+    function viewerFitScale(){
+      const imgEl = document.getElementById('matchImageViewerImg');
+      const rect = viewerStageRect();
+      const nw = imgEl && imgEl.naturalWidth ? imgEl.naturalWidth : 0;
+      const nh = imgEl && imgEl.naturalHeight ? imgEl.naturalHeight : 0;
+      if(!nw || !nh || !rect.width || !rect.height) return 1;
+      // Keep the initial view fully visible, but never upscale a small original image by default.
+      return Math.min(rect.width / nw, rect.height / nh, 1);
+    }
+    function viewerDisplayScale(userScale){
+      return viewerFitScale() * clampViewerScale(userScale);
+    }
     function applyViewerTransform(){
       const st = viewerState();
       if(st.scale <= 1.001){ st.scale = 1; st.x = 0; st.y = 0; }
-      $('#matchImageViewerImg').css('transform', `translate3d(${st.x}px, ${st.y}px, 0) scale(${st.scale})`);
+      const imgEl = document.getElementById('matchImageViewerImg');
+      const nw = imgEl && imgEl.naturalWidth ? imgEl.naturalWidth : 0;
+      const nh = imgEl && imgEl.naturalHeight ? imgEl.naturalHeight : 0;
+      const displayScale = viewerDisplayScale(st.scale || 1);
+      if(imgEl && nw && nh){
+        imgEl.style.width = `${nw}px`;
+        imgEl.style.height = `${nh}px`;
+        imgEl.style.maxWidth = 'none';
+        imgEl.style.maxHeight = 'none';
+        imgEl.style.transform = `translate(-50%, -50%) translate3d(${st.x}px, ${st.y}px, 0) scale(${displayScale})`;
+      }else{
+        $('#matchImageViewerImg').css('transform', `translate(-50%, -50%) translate3d(${st.x}px, ${st.y}px, 0) scale(${displayScale})`);
+      }
       $('#matchImageViewer').toggleClass('is-zoomed', st.scale > 1.001);
     }
     function resetViewerTransform(){
@@ -2856,21 +2886,48 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
       st.scale = 1; st.x = 0; st.y = 0; st.touch = null;
       applyViewerTransform();
     }
+    function zoomViewerTo(nextScale, clientX, clientY){
+      const st = viewerState();
+      const oldScale = clampViewerScale(st.scale || 1);
+      const newScale = clampViewerScale(nextScale);
+      if(Math.abs(newScale - oldScale) < 0.0001) return;
+      const rect = viewerStageRect();
+      const fit = viewerFitScale();
+      if(clientX != null && clientY != null && fit > 0){
+        const cx = clientX - (rect.left + rect.width / 2);
+        const cy = clientY - (rect.top + rect.height / 2);
+        const oldDisplay = Math.max(0.0001, fit * oldScale);
+        const newDisplay = Math.max(0.0001, fit * newScale);
+        st.x = cx - ((cx - (st.x || 0)) * newDisplay / oldDisplay);
+        st.y = cy - ((cy - (st.y || 0)) * newDisplay / oldDisplay);
+      }
+      st.scale = newScale;
+      if(st.scale <= 1.001){ st.x = 0; st.y = 0; }
+      applyViewerTransform();
+    }
     function renderViewerImage(){
       const images = currentViewerImages();
       const img = images[app.imageViewer.index];
       if(!img) return;
       const path = img.path || img.githubPath || img.filePath || img.fileName || '';
-      const url = `${cloudApi('/api/image')}?path=${encodeURIComponent(path)}&v=${encodeURIComponent(img.sha || img.updatedAt || img.createdAt || '')}`;
-      $('#matchImageViewerImg').attr('src', url);
-      applyViewerTransform();
+      const url = cloudImageUrl(path, img, 'original');
+      const $img = $('#matchImageViewerImg');
+      $img.off('load.matchViewer error.matchViewer')
+        .css({width:'',height:'',maxWidth:'none',maxHeight:'none',transform:'translate(-50%, -50%) scale(1)'});
+      $img.on('load.matchViewer', function(){
+        const st = viewerState();
+        st.scale = 1; st.x = 0; st.y = 0; st.touch = null;
+        applyViewerTransform();
+      });
+      $img.on('error.matchViewer', function(){ setMatchImageStatus(imageText('imageLoadFail'), 'error'); });
+      $img.attr('src', url);
     }
     function openImageViewer(matchKey, index){
       ensureImageViewer();
       app.imageViewer = {key: matchKey, index: Number(index) || 0, scale: 1, x:0, y:0, touch:null};
-      renderViewerImage();
       $('body').addClass('match-image-viewer-open');
       $('#matchImageViewer').removeClass('hidden touching is-zoomed').attr('aria-hidden','false');
+      renderViewerImage();
     }
     function closeImageViewer(){
       $('body').removeClass('match-image-viewer-open');
@@ -2888,11 +2945,11 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
       app.imageViewer.touch = null;
       renderViewerImage();
     }
-    function viewerZoom(delta){
+    function viewerZoom(delta, originEvent){
       const st = viewerState();
-      st.scale = clampViewerScale((st.scale || 1) + delta);
-      if(st.scale <= 1.001){ st.x = 0; st.y = 0; }
-      applyViewerTransform();
+      const next = clampViewerScale((st.scale || 1) + delta);
+      const ev = originEvent && (originEvent.originalEvent || originEvent);
+      zoomViewerTo(next, ev && ev.clientX, ev && ev.clientY);
     }
     function touchDistance(touches){
       if(!touches || touches.length < 2) return 0;
@@ -2936,13 +2993,24 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
           const dist = touchDistance(e.touches);
           const startDist = Math.max(1, st.touch.startDistance || dist || 1);
           const mid = touchMidpoint(e.touches);
-          st.scale = clampViewerScale((st.touch.startScale || 1) * (dist / startDist));
-          if(st.scale > 1.001){
+          const nextScale = clampViewerScale((st.touch.startScale || 1) * (dist / startDist));
+          const rect = viewerStageRect();
+          const fit = viewerFitScale();
+          if(fit > 0){
+            const startCx = (st.touch.startMidX || mid.x) - (rect.left + rect.width / 2);
+            const startCy = (st.touch.startMidY || mid.y) - (rect.top + rect.height / 2);
+            const cx = mid.x - (rect.left + rect.width / 2);
+            const cy = mid.y - (rect.top + rect.height / 2);
+            const oldDisplay = Math.max(0.0001, fit * (st.touch.startScale || 1));
+            const newDisplay = Math.max(0.0001, fit * nextScale);
+            st.x = cx - ((startCx - (st.touch.startX || 0)) * newDisplay / oldDisplay);
+            st.y = cy - ((startCy - (st.touch.startY || 0)) * newDisplay / oldDisplay);
+          }else{
             st.x = (st.touch.startX || 0) + (mid.x - (st.touch.startMidX || mid.x));
             st.y = (st.touch.startY || 0) + (mid.y - (st.touch.startMidY || mid.y));
-          }else{
-            st.x = 0; st.y = 0;
           }
+          st.scale = nextScale;
+          if(st.scale <= 1.001){ st.x = 0; st.y = 0; }
           applyViewerTransform();
         }else if(e.touches && e.touches.length === 1 && st.touch && st.touch.mode === 'pan'){
           if((st.scale || 1) <= 1.001) return;
@@ -2972,7 +3040,7 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
         e.preventDefault();
         const st = viewerState();
         if(st.scale > 1.001) resetViewerTransform();
-        else { st.scale = 2; st.x = 0; st.y = 0; applyViewerTransform(); }
+        else zoomViewerTo(2, e.clientX, e.clientY);
       });
     }
     function deleteMatchImage(index){
@@ -3501,8 +3569,8 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
         if(action === 'close') closeImageViewer();
         else if(action === 'prev') viewerMove(-1);
         else if(action === 'next') viewerMove(1);
-        else if(action === 'zoomIn') viewerZoom(0.25);
-        else if(action === 'zoomOut') viewerZoom(-0.25);
+        else if(action === 'zoomIn') viewerZoom(Math.max(0.25, (viewerState().scale || 1) * 0.2), e);
+        else if(action === 'zoomOut') viewerZoom(-Math.max(0.25, (viewerState().scale || 1) * 0.2), e);
         else if(action === 'reset') resetViewerTransform();
       });
       $(document).on('touchend pointerup', '#matchImageViewerClose,.match-image-viewer-backdrop', function(e){
@@ -3515,7 +3583,12 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
       });
       $(document).on('wheel', '#matchImageViewer .match-image-viewer-stage', function(e){
         e.preventDefault();
-        viewerZoom(e.originalEvent.deltaY < 0 ? 0.15 : -0.15);
+        const st = viewerState();
+        const step = Math.max(0.25, (st.scale || 1) * 0.18);
+        viewerZoom(e.originalEvent.deltaY < 0 ? step : -step, e);
+      });
+      $(window).on('resize orientationchange', function(){
+        if($('#matchImageViewer').length && !$('#matchImageViewer').hasClass('hidden')) applyViewerTransform();
       });
       $('.tab').on('click', function(){ app.activeTab = $(this).data('tab'); $('.tab').removeClass('active'); $(this).addClass('active'); app.lastOtherHtml = ''; render(); refreshScoresOnce(); });
     }
