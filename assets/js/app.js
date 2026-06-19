@@ -19,8 +19,8 @@
     // 比赛图片云端配置：不同设备打开时，会从 GitHub Pages 上的公开配置文件读取 Worker 地址和上传密码。
     // 注意：按你的要求 APP_PASSWORD 会放在 config.json 里，方便多设备免配置；这意味着知道页面地址的人也能看到密码。
     const CLOUD_CONFIG_URL = "./worldcup-cloud/config.json";
-    const CLOUD_CONFIG_CACHE_KEY = "wc2026_cloud_config_v1";
-    const MATCH_IMAGE_CACHE_PREFIX = "wc2026_match_images_";
+    const CLOUD_CONFIG_CACHE_KEY = "wc2026_cloud_config_v2";
+    const MATCH_IMAGE_CACHE_PREFIX = "wc2026_match_images_v2_";
     const MATCH_IMAGE_DEFAULT_MAX_WIDTH = 1600;
     const MATCH_IMAGE_DEFAULT_QUALITY = 0.82;
 
@@ -106,14 +106,14 @@
     }
 
 
-    const APP_VERSION = "v95";
+    const APP_VERSION = "v96";
 
     const I18N = {
       zh: {
         htmlLang:"zh-CN",
         title:"2026 世界杯",
-        browserTitle:"2026 世界杯赛程 v95",
-        pwaAppName:"2026世界杯 v95",
+        browserTitle:"2026 世界杯赛程 v96",
+        pwaAppName:"2026世界杯 v96",
         langZhLabel:"中文",
         langEnLabel:"英文",
         langTrLabel:"土耳其语",
@@ -178,8 +178,8 @@
       en: {
         htmlLang:"en",
         title:"World Cup 2026",
-        browserTitle:"World Cup 2026 Schedule v95",
-        pwaAppName:"World Cup 2026 v95",
+        browserTitle:"World Cup 2026 Schedule v96",
+        pwaAppName:"World Cup 2026 v96",
         langZhLabel:"Chinese",
         langEnLabel:"English",
         langTrLabel:"Turkish",
@@ -244,8 +244,8 @@
       tr: {
         htmlLang:"tr",
         title:"2026 Dünya Kupası",
-        browserTitle:"2026 Dünya Kupası Programı v95",
-        pwaAppName:"Dünya Kupası 2026 v95",
+        browserTitle:"2026 Dünya Kupası Programı v96",
+        pwaAppName:"Dünya Kupası 2026 v96",
         langZhLabel:"Çince",
         langEnLabel:"İngilizce",
         langTrLabel:"Türkçe",
@@ -2538,18 +2538,40 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
       const base = cloudCleanBase(cfg && cfg.workerBaseUrl);
       return !!base && !/your-worker|example|请填写|填入|你的|workers\.dev\/xxx/i.test(base);
     }
+    function withCacheBust(url){
+      const sep = String(url || '').includes('?') ? '&' : '?';
+      return `${url}${sep}_=${Date.now()}`;
+    }
+    function ajaxErrorMessage(xhr, fallback){
+      const status = xhr && xhr.status ? `HTTP ${xhr.status}` : '';
+      let msg = '';
+      try{
+        if(xhr && xhr.responseJSON && xhr.responseJSON.message) msg = xhr.responseJSON.message;
+        else if(xhr && xhr.responseText){
+          const parsed = JSON.parse(xhr.responseText);
+          msg = parsed && parsed.message ? parsed.message : xhr.responseText;
+        }
+      }catch(e){ msg = xhr && xhr.responseText ? String(xhr.responseText).slice(0, 160) : ''; }
+      const detail = [status, msg].filter(Boolean).join('：');
+      return detail ? `${fallback}（${detail}）` : fallback;
+    }
+    function logImageDebug(label, data){
+      try{ console.debug(`[match-images] ${label}`, data || ''); }catch(e){}
+    }
     function loadCloudConfig(force=false){
       if(app.cloudConfig && !force) return $.Deferred().resolve(app.cloudConfig).promise();
       if(app.cloudConfigLoading && !force) return app.cloudConfigLoading;
       const dfd = $.Deferred();
       app.cloudConfigLoading = dfd.promise();
-      $.ajax({url:CLOUD_CONFIG_URL, dataType:'json', cache:false, timeout:8000})
+      $.ajax({url:withCacheBust(CLOUD_CONFIG_URL), dataType:'json', cache:false, timeout:8000})
         .done(cfg => {
+          logImageDebug('config loaded', cfg);
           app.cloudConfig = Object.assign({enabled:true, workerBaseUrl:'', appPassword:'', imageRoot:'worldcup-cloud/match-images', maxImageWidth:MATCH_IMAGE_DEFAULT_MAX_WIDTH, jpegQuality:MATCH_IMAGE_DEFAULT_QUALITY}, cfg || {});
           try{ localStorage.setItem(CLOUD_CONFIG_CACHE_KEY, JSON.stringify(app.cloudConfig)); }catch(e){}
           dfd.resolve(app.cloudConfig);
         })
-        .fail(() => {
+        .fail(xhr => {
+          logImageDebug('config load failed', xhr && {status:xhr.status, response:xhr.responseText});
           try{
             const cached = JSON.parse(localStorage.getItem(CLOUD_CONFIG_CACHE_KEY) || 'null');
             if(cached){
@@ -2647,7 +2669,7 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
           if(cached && Array.isArray(cached.images)){ app.matchImages[matchKey] = cached.images; renderMatchImageGrid(matchKey, cached.images); }
         }catch(e){}
       }
-      return loadCloudConfig(false).then(cfg => {
+      return loadCloudConfig(force || !isCloudConfigReady(app.cloudConfig)).then(cfg => {
         if(!cfg || cfg.enabled === false || !isCloudConfigReady(cfg)){
           setMatchImageStatus(imageText('imageConfigMissing'), 'error');
           renderMatchImageGrid(matchKey, []);
@@ -2663,8 +2685,9 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
             setMatchImageStatus(images.length ? imageText('imageUploadReady') : imageText('imageEmpty'), images.length ? 'ok' : '');
             renderMatchImageGrid(matchKey, images);
           })
-          .fail(() => {
-            setMatchImageStatus(imageText('imageLoadFail'), 'error');
+          .fail(xhr => {
+            logImageDebug('list failed', xhr && {status:xhr.status, response:xhr.responseText});
+            setMatchImageStatus(ajaxErrorMessage(xhr, imageText('imageLoadFail')), 'error');
           });
       });
     }
@@ -2708,8 +2731,10 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
         const base64 = out.split(',')[1] || '';
         const stamp = new Date().toISOString().replace(/[-:.TZ]/g,'').slice(0,14);
         const rand = Math.random().toString(36).slice(2,8);
+        const imageId = `${stamp}-${rand}`;
         return {
-          fileName: `${stamp}-${rand}.jpg`,
+          id: imageId,
+          fileName: `${imageId}.jpg`,
           contentType: 'image/jpeg',
           base64,
           width: w,
@@ -2735,6 +2760,7 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
         const jobs = arr.map(file => compressImageFile(file, cfg));
         return $.when.apply($, jobs).then(function(){
           const images = jobs.length === 1 ? [arguments[0]] : Array.from(arguments);
+          logImageDebug('upload request', {matchKey, count:images.length, url:cloudApi(`/api/matches/${encodeURIComponent(matchKey)}/images`)});
           return $.ajax({
             url: cloudApi(`/api/matches/${encodeURIComponent(matchKey)}/images`),
             method: 'POST',
@@ -2742,11 +2768,13 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
             dataType: 'json',
             timeout: 60000,
             data: JSON.stringify({password: cfg.appPassword || '', images})
-          }).done(() => {
+          }).done(res => {
+            logImageDebug('upload done', res);
             setMatchImageStatus(imageText('imageUploadDone'), 'ok');
             loadMatchImages(match, true);
-          }).fail(() => {
-            setMatchImageStatus(imageText('imageUploadFail'), 'error');
+          }).fail(xhr => {
+            logImageDebug('upload failed', xhr && {status:xhr.status, response:xhr.responseText});
+            setMatchImageStatus(ajaxErrorMessage(xhr, imageText('imageUploadFail')), 'error');
           });
         }, () => {
           setMatchImageStatus(imageText('imageUploadFail'), 'error');
@@ -2823,7 +2851,7 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
           data: JSON.stringify({password: cfg.appPassword || ''}),
           timeout: 30000
         }).done(() => loadMatchImages(match, true))
-          .fail(() => setMatchImageStatus(imageText('imageUploadFail'), 'error'));
+          .fail(xhr => setMatchImageStatus(ajaxErrorMessage(xhr, imageText('imageUploadFail')), 'error'));
       });
     }
 
@@ -2879,7 +2907,8 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
         </div>
       `);
       if(app.predictionTab === 'live'){
-        $('#predictionContent').html(renderPredictionLiveContent(match, score, st));
+        $('#predictionContent').html(renderPredictionLiveContent(match, score, st) + renderMatchImagesShell(match));
+        initMatchImages(match);
         return;
       }
       const factors = factorItems(match, model).map(x=>`<div class="factor-item"><div class="factor-key">${esc(x[0])}</div><div class="factor-val">${esc(x[1])}</div></div>`).join('');

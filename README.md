@@ -2,7 +2,7 @@
 
 这是一个适合部署到 GitHub Pages 的 2026 世界杯赛程 PWA 页面，支持 PC 和手机端访问，也适合在 iPhone Safari 中“添加到主屏幕”当作 App 使用。
 
-当前版本：v95 比赛图片云端存储版  
+当前版本：v96 比赛图片云端存储修正版  
 基础优化来源：v94 刷新按钮图标版
 
 ---
@@ -269,7 +269,7 @@ v85 主要是低风险性能优化：
 - 保持原有刷新功能不变：点击后重新加载赛程并刷新实时比分。
 - Service Worker 缓存名更新为 `wc2026-pwa-v94-refresh-icon`。
 
-## v95 更新：比赛图片 GitHub 云端存储
+## v96 更新：比赛图片 GitHub 云端存储
 
 - 新增 `worldcup-storage-worker.js`，用于把比赛图片通过 Cloudflare Worker 上传到 GitHub。
 - 新增 `worldcup-cloud/config.json`，前端会从这里读取 Worker 地址和上传密码，实现不同设备免重复配置。
@@ -277,7 +277,7 @@ v85 主要是低风险性能优化：
 - 在比赛预测详情页新增“比赛图片”模块。首页不加载图片，只有打开某场比赛后才加载该场图片。
 - 支持一次选择多张图片上传；前端会自动压缩为 JPG，默认最长边 1600px，质量 0.82。
 - 支持图片缩略图查看、点击放大、上一张/下一张、放大/缩小/还原、删除图片。
-- Service Worker 缓存名更新为 `wc2026-pwa-v95-match-images`。
+- Service Worker 缓存名更新为 `wc2026-pwa-v96-match-images`。
 
 ### 图片云端配置步骤
 
@@ -322,3 +322,13 @@ IMAGE_ROOT   worldcup-cloud/match-images
 
 注意：本版本按需求把 `appPassword` 放在公开配置文件里，方便多设备免配置；这也意味着知道页面地址的人可以看到该密码。正式内网或公开场景下，更安全的做法是上传/删除时手动输入密码，不把密码放前端配置。
 
+
+
+## v96 更新：比赛图片上传排查修复
+
+- 配置文件读取增加时间戳，避免 Service Worker / 浏览器缓存导致读取旧配置。
+- 图片加载、上传、删除失败时显示 HTTP 状态和 Worker 返回 message，方便定位。
+- 上传时 Console 增加 `[match-images]` 调试日志。
+- 直播页也显示“比赛图片”模块。
+- 前端生成图片 `id`，删除和 manifest 维护更稳定。
+- 更新 Service Worker 缓存名为 `wc2026-pwa-v96-match-images`。
