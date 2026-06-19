@@ -3,6 +3,7 @@
   "workerBaseUrl": "https://world-cup-data-worker.287418456.workers.dev",
   "appPassword": "1123",
   "imageRoot": "worldcup-cloud/match-images",
-  "maxImageWidth": 1600,
-  "jpegQuality": 0.82
+  "preserveOriginal": true,
+  "maxImageWidth": 0,
+  "jpegQuality": 1
 }
