@@ -106,14 +106,14 @@
     }
 
 
-    const APP_VERSION = "v100";
+    const APP_VERSION = "v2";
 
     const I18N = {
       zh: {
         htmlLang:"zh-CN",
         title:"2026 世界杯",
-        browserTitle:"2026 世界杯赛程 v100",
-        pwaAppName:"2026世界杯 v100",
+        browserTitle:"2026 世界杯赛程 v2",
+        pwaAppName:"2026世界杯 v2",
         langZhLabel:"中文",
         langEnLabel:"英文",
         langTrLabel:"土耳其语",
@@ -178,8 +178,8 @@
       en: {
         htmlLang:"en",
         title:"World Cup 2026",
-        browserTitle:"World Cup 2026 Schedule v100",
-        pwaAppName:"World Cup 2026 v100",
+        browserTitle:"World Cup 2026 Schedule v2",
+        pwaAppName:"World Cup 2026 v2",
         langZhLabel:"Chinese",
         langEnLabel:"English",
         langTrLabel:"Turkish",
@@ -244,8 +244,8 @@
       tr: {
         htmlLang:"tr",
         title:"2026 Dünya Kupası",
-        browserTitle:"2026 Dünya Kupası Programı v100",
-        pwaAppName:"Dünya Kupası 2026 v100",
+        browserTitle:"2026 Dünya Kupası Programı v2",
+        pwaAppName:"Dünya Kupası 2026 v2",
         langZhLabel:"Çince",
         langEnLabel:"İngilizce",
         langTrLabel:"Türkçe",
