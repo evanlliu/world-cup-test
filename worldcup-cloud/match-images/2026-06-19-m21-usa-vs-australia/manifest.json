@@ -1,6 +1,6 @@
 {
   "matchKey": "2026-06-19-m21-usa-vs-australia",
-  "updatedAt": "2026-06-19T03:56:08.010Z",
+  "updatedAt": "2026-06-19T03:56:55.233Z",
   "images": [
     {
       "id": "20260619035606-byl88d",
@@ -14,6 +14,19 @@
       "originalSize": 177725,
       "createdAt": "2026-06-19T03:56:08.010Z",
       "sha": "8646ed867a0f467dc33aca1375bd9d8af163bb93"
+    },
+    {
+      "id": "20260619035654-wfvtrt",
+      "fileName": "20260619035654-wfvtrt.jpg",
+      "path": "worldcup-cloud/match-images/2026-06-19-m21-usa-vs-australia/20260619035654-wfvtrt.jpg",
+      "contentType": "image/jpeg",
+      "width": 740,
+      "height": 1600,
+      "size": 73872,
+      "originalName": "7883bcbbf77a9e7fb0d9000ebbae1b46.jpg",
+      "originalSize": 166586,
+      "createdAt": "2026-06-19T03:56:55.233Z",
+      "sha": "591b1f0e9df109ab642487de3e71157f90d2667d"
     }
   ]
 }
