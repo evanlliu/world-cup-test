@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wc2026-pwa-v4-default-odds';
+const CACHE_NAME = 'wc2026-pwa-v5-app-name';
 const APP_SHELL = [
   './',
   './index.html',

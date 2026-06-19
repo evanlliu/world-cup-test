@@ -12,15 +12,15 @@
     const TZ_MAIN = "America/Monterrey";
     const TZ_CHINA = "Asia/Shanghai";
     const CACHE_KEY = "wc2026_schedule_mobile_ui_v1";
-    const PREDICTION_CACHE_KEY = 'wc2026_prediction_cache_v4';
+    const PREDICTION_CACHE_KEY = 'wc2026_prediction_cache_v5';
     const SCORE_CACHE_KEY = "wc2026_score_cache_v7";
     const SCORE_REFRESH_MS = 30000;
 
     // 比赛图片云端配置：不同设备打开时，会从 GitHub Pages 上的公开配置文件读取 Worker 地址和上传密码。
     // 注意：按你的要求 APP_PASSWORD 会放在 config.json 里，方便多设备免配置；这意味着知道页面地址的人也能看到密码。
     const CLOUD_CONFIG_URL = "./worldcup-cloud/config.json";
-    const CLOUD_CONFIG_CACHE_KEY = "wc2026_cloud_config_v4";
-    const MATCH_IMAGE_CACHE_PREFIX = "wc2026_match_images_v4_";
+    const CLOUD_CONFIG_CACHE_KEY = "wc2026_cloud_config_v5";
+    const MATCH_IMAGE_CACHE_PREFIX = "wc2026_match_images_v5_";
     const MATCH_IMAGE_DEFAULT_MAX_WIDTH = 1600;
     const MATCH_IMAGE_DEFAULT_QUALITY = 0.82;
 
@@ -106,14 +106,14 @@
     }
 
 
-    const APP_VERSION = "v4";
+    const APP_VERSION = "v5";
 
     const I18N = {
       zh: {
         htmlLang:"zh-CN",
         title:"2026 世界杯",
-        browserTitle:"2026 世界杯赛程 v4",
-        pwaAppName:"2026世界杯 v4",
+        browserTitle:"2026 世界杯赛程 v5",
+        pwaAppName:"世界杯2026",
         langZhLabel:"中文",
         langEnLabel:"英文",
         langTrLabel:"土耳其语",
@@ -178,8 +178,8 @@
       en: {
         htmlLang:"en",
         title:"World Cup 2026",
-        browserTitle:"World Cup 2026 Schedule v4",
-        pwaAppName:"World Cup 2026 v4",
+        browserTitle:"World Cup 2026 Schedule v5",
+        pwaAppName:"世界杯2026",
         langZhLabel:"Chinese",
         langEnLabel:"English",
         langTrLabel:"Turkish",
@@ -244,8 +244,8 @@
       tr: {
         htmlLang:"tr",
         title:"2026 Dünya Kupası",
-        browserTitle:"2026 Dünya Kupası Programı v4",
-        pwaAppName:"Dünya Kupası 2026 v4",
+        browserTitle:"2026 Dünya Kupası Programı v5",
+        pwaAppName:"世界杯2026",
         langZhLabel:"Çince",
         langEnLabel:"İngilizce",
         langTrLabel:"Türkçe",
