@@ -106,14 +106,14 @@
     }
 
 
-    const APP_VERSION = "v96";
+    const APP_VERSION = "v97";
 
     const I18N = {
       zh: {
         htmlLang:"zh-CN",
         title:"2026 世界杯",
-        browserTitle:"2026 世界杯赛程 v96",
-        pwaAppName:"2026世界杯 v96",
+        browserTitle:"2026 世界杯赛程 v97",
+        pwaAppName:"2026世界杯 v97",
         langZhLabel:"中文",
         langEnLabel:"英文",
         langTrLabel:"土耳其语",
@@ -173,13 +173,13 @@
         rankTitle:"排名", teamHeader:"球队", playerBoardTitle:"球员榜", playerBoardHint:"优先读取实时接口返回的进球事件；没有球员明细时会提示等待数据。", goalsHeader:"进球", assistsHeader:"助攻", matchesHeader:"比赛", playerDataWaiting:"暂无球员明细数据，开赛后如实时接口返回进球球员会自动汇总。",
         teamBoardTitle:"球队榜", teamBoardHint:"综合积分、净胜球、进球数和基础实力生成，方便快速查看当前表现。", ratingHeader:"综合", powerHeader:"实力", rankHeader:"排名",
         bracketTitle:"晋级图", bracketHint:"按淘汰赛赛程自动展示；小组名次会尽量根据当前积分榜解析，未确定时显示占位。", undecided:"待定", winnerOf:"胜者", loserOf:"负者", bestThird:"最佳第3",
-        matchImages:"比赛图片", matchImagesHint:"图片按比赛存放到 GitHub；进入本场比赛后才加载，不影响首页打开速度。", uploadImages:"上传图片", refreshImages:"刷新", imageConfigMissing:"图片云端还没有配置，请先修改 worldcup-cloud/config.json。", imageLoading:"图片加载中...", imageEmpty:"本场比赛暂无图片", imageUploadReady:"可一次选择多张图片上传", imageUploading:"正在上传图片...", imageUploadDone:"上传完成", imageUploadFail:"上传失败，请检查 Worker 地址、密码和 GitHub Token。", imageLoadFail:"图片加载失败，请检查 Worker 和 GitHub 配置。", imageOpen:"查看图片", imagePrev:"上一张", imageNext:"下一张", imageZoomIn:"放大", imageZoomOut:"缩小", imageReset:"还原", imageClose:"关闭", imageDelete:"删除", imageDeleteConfirm:"确定删除这张图片吗？"
+        matchImages:"比赛图片", matchImagesHint:"图片按比赛存放到 GitHub；进入本场比赛后才加载，不影响首页打开速度。", uploadImages:"上传图片", refreshImages:"刷新", imageConfigMissing:"图片云端还没有配置，请先修改 worldcup-cloud/config.json。", imageLoading:"图片加载中...", imageEmpty:"本场比赛暂无图片", imageUploadReady:"可一次选择多张图片上传", imageUploading:"正在上传图片...", imageUploadDone:"上传完成", imageUploadFail:"上传失败，请检查 Worker 地址、密码和 GitHub Token。", imageEncodeFail:"图片压缩失败，已尝试原图上传；如仍失败，请换 JPG/PNG 图片。", imageLoadFail:"图片加载失败，请检查 Worker 和 GitHub 配置。", imageOpen:"查看图片", imagePrev:"上一张", imageNext:"下一张", imageZoomIn:"放大", imageZoomOut:"缩小", imageReset:"还原", imageClose:"关闭", imageDelete:"删除", imageDeleteConfirm:"确定删除这张图片吗？"
       },
       en: {
         htmlLang:"en",
         title:"World Cup 2026",
-        browserTitle:"World Cup 2026 Schedule v96",
-        pwaAppName:"World Cup 2026 v96",
+        browserTitle:"World Cup 2026 Schedule v97",
+        pwaAppName:"World Cup 2026 v97",
         langZhLabel:"Chinese",
         langEnLabel:"English",
         langTrLabel:"Turkish",
@@ -239,13 +239,13 @@
         rankTitle:"Rank", teamHeader:"Team", playerBoardTitle:"Top Players", playerBoardHint:"Goal events are read from the live feed when available. If player details are not returned yet, this page shows a waiting notice.", goalsHeader:"Goals", assistsHeader:"Assists", matchesHeader:"Matches", playerDataWaiting:"No player detail is available yet. Once the live feed returns scorers, they will be summarized automatically.",
         teamBoardTitle:"Team Ranking", teamBoardHint:"Ranking combines points, goal difference, goals scored and baseline team strength.", ratingHeader:"Rating", powerHeader:"Power", rankHeader:"Rank",
         bracketTitle:"Bracket", bracketHint:"Knockout fixtures are shown automatically. Group placeholders are resolved from current standings when possible.", undecided:"TBD", winnerOf:"Winner", loserOf:"Loser", bestThird:"Best 3rd",
-        matchImages:"Match Images", matchImagesHint:"Images are stored on GitHub by match and loaded only after you open this match.", uploadImages:"Upload images", refreshImages:"Refresh", imageConfigMissing:"Cloud image storage is not configured. Please edit worldcup-cloud/config.json first.", imageLoading:"Loading images...", imageEmpty:"No images for this match yet", imageUploadReady:"Select multiple images at once", imageUploading:"Uploading images...", imageUploadDone:"Upload complete", imageUploadFail:"Upload failed. Check Worker URL, password and GitHub token.", imageLoadFail:"Could not load images. Check Worker and GitHub settings.", imageOpen:"View image", imagePrev:"Previous", imageNext:"Next", imageZoomIn:"Zoom in", imageZoomOut:"Zoom out", imageReset:"Reset", imageClose:"Close", imageDelete:"Delete", imageDeleteConfirm:"Delete this image?"
+        matchImages:"Match Images", matchImagesHint:"Images are stored on GitHub by match and loaded only after you open this match.", uploadImages:"Upload images", refreshImages:"Refresh", imageConfigMissing:"Cloud image storage is not configured. Please edit worldcup-cloud/config.json first.", imageLoading:"Loading images...", imageEmpty:"No images for this match yet", imageUploadReady:"Select multiple images at once", imageUploading:"Uploading images...", imageUploadDone:"Upload complete", imageUploadFail:"Upload failed. Check Worker URL, password and GitHub token.", imageEncodeFail:"Image compression failed, trying original file upload. Use JPG/PNG if it still fails.", imageLoadFail:"Could not load images. Check Worker and GitHub settings.", imageOpen:"View image", imagePrev:"Previous", imageNext:"Next", imageZoomIn:"Zoom in", imageZoomOut:"Zoom out", imageReset:"Reset", imageClose:"Close", imageDelete:"Delete", imageDeleteConfirm:"Delete this image?"
       },
       tr: {
         htmlLang:"tr",
         title:"2026 Dünya Kupası",
-        browserTitle:"2026 Dünya Kupası Programı v96",
-        pwaAppName:"Dünya Kupası 2026 v96",
+        browserTitle:"2026 Dünya Kupası Programı v97",
+        pwaAppName:"Dünya Kupası 2026 v97",
         langZhLabel:"Çince",
         langEnLabel:"İngilizce",
         langTrLabel:"Türkçe",
@@ -305,7 +305,7 @@
         rankTitle:"Sıra", teamHeader:"Takım", playerBoardTitle:"Oyuncu Sıralaması", playerBoardHint:"Canlı veri gol olaylarını döndürdüğünde oyuncu istatistikleri otomatik özetlenir.", goalsHeader:"Gol", assistsHeader:"Asist", matchesHeader:"Maç", playerDataWaiting:"Henüz oyuncu detayı yok. Canlı veri golcüleri döndürdüğünde otomatik listelenecek.",
         teamBoardTitle:"Takım Sıralaması", teamBoardHint:"Sıralama puan, averaj, atılan gol ve temel takım gücünü birlikte değerlendirir.", ratingHeader:"Puan", powerHeader:"Güç", rankHeader:"Sıra",
         bracketTitle:"Eleme Ağacı", bracketHint:"Eleme maçları otomatik gösterilir; grup yer tutucuları mümkün olduğunda güncel puan durumundan çözülür.", undecided:"Belli değil", winnerOf:"Kazanan", loserOf:"Kaybeden", bestThird:"En iyi 3.",
-        matchImages:"Maç Görselleri", matchImagesHint:"Görseller maç bazında GitHub üzerinde saklanır ve yalnızca bu maçı açınca yüklenir.", uploadImages:"Görsel yükle", refreshImages:"Yenile", imageConfigMissing:"Bulut görsel depolama yapılandırılmadı. Lütfen önce worldcup-cloud/config.json dosyasını düzenleyin.", imageLoading:"Görseller yükleniyor...", imageEmpty:"Bu maç için henüz görsel yok", imageUploadReady:"Birden fazla görsel seçebilirsiniz", imageUploading:"Görseller yükleniyor...", imageUploadDone:"Yükleme tamamlandı", imageUploadFail:"Yükleme başarısız. Worker adresi, parola ve GitHub tokenı kontrol edin.", imageLoadFail:"Görseller yüklenemedi. Worker ve GitHub ayarlarını kontrol edin.", imageOpen:"Görseli görüntüle", imagePrev:"Önceki", imageNext:"Sonraki", imageZoomIn:"Yakınlaştır", imageZoomOut:"Uzaklaştır", imageReset:"Sıfırla", imageClose:"Kapat", imageDelete:"Sil", imageDeleteConfirm:"Bu görsel silinsin mi?"
+        matchImages:"Maç Görselleri", matchImagesHint:"Görseller maç bazında GitHub üzerinde saklanır ve yalnızca bu maçı açınca yüklenir.", uploadImages:"Görsel yükle", refreshImages:"Yenile", imageConfigMissing:"Bulut görsel depolama yapılandırılmadı. Lütfen önce worldcup-cloud/config.json dosyasını düzenleyin.", imageLoading:"Görseller yükleniyor...", imageEmpty:"Bu maç için henüz görsel yok", imageUploadReady:"Birden fazla görsel seçebilirsiniz", imageUploading:"Görseller yükleniyor...", imageUploadDone:"Yükleme tamamlandı", imageUploadFail:"Yükleme başarısız. Worker adresi, parola ve GitHub tokenı kontrol edin.", imageEncodeFail:"Görsel sıkıştırılamadı, orijinal dosya yükleniyor. Hâlâ başarısızsa JPG/PNG deneyin.", imageLoadFail:"Görseller yüklenemedi. Worker ve GitHub ayarlarını kontrol edin.", imageOpen:"Görseli görüntüle", imagePrev:"Önceki", imageNext:"Sonraki", imageZoomIn:"Yakınlaştır", imageZoomOut:"Uzaklaştır", imageReset:"Sıfırla", imageClose:"Kapat", imageDelete:"Sil", imageDeleteConfirm:"Bu görsel silinsin mi?"
       }
     };
 
@@ -2712,6 +2712,47 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
       img.src = dataUrl;
       return dfd.promise();
     }
+    function imageExtensionFromFile(file){
+      const name = String(file && file.name || '').toLowerCase();
+      const ext = (name.match(/\.([a-z0-9]+)$/) || [,'jpg'])[1];
+      if(['jpg','jpeg','png','webp','gif','heic','heif'].includes(ext)) return ext === 'jpeg' ? 'jpg' : ext;
+      return 'jpg';
+    }
+    function imageContentTypeFromFile(file, fallback='image/jpeg'){
+      const type = String(file && file.type || '').trim();
+      if(/^image\//i.test(type)) return type;
+      const ext = imageExtensionFromFile(file);
+      if(ext === 'png') return 'image/png';
+      if(ext === 'webp') return 'image/webp';
+      if(ext === 'gif') return 'image/gif';
+      if(ext === 'heic') return 'image/heic';
+      if(ext === 'heif') return 'image/heif';
+      return fallback;
+    }
+    function createImageUploadId(){
+      const stamp = new Date().toISOString().replace(/[-:.TZ]/g,'').slice(0,14);
+      const rand = Math.random().toString(36).slice(2,8);
+      return `${stamp}-${rand}`;
+    }
+    function rawImageFilePayload(file){
+      return readFileAsDataUrl(file).then(dataUrl => {
+        const base64 = String(dataUrl || '').split(',')[1] || '';
+        const ext = imageExtensionFromFile(file);
+        const imageId = createImageUploadId();
+        return {
+          id: imageId,
+          fileName: `${imageId}.${ext === 'jpeg' ? 'jpg' : ext}`,
+          contentType: imageContentTypeFromFile(file),
+          base64,
+          width: null,
+          height: null,
+          originalName: file.name || '',
+          originalSize: file.size || 0,
+          size: file.size || Math.round(base64.length * 3 / 4),
+          rawUpload: true
+        };
+      });
+    }
     function compressImageFile(file, cfg){
       return readFileAsDataUrl(file).then(dataUrl => loadImageElement(dataUrl).then(img => {
         const maxWidth = Number(cfg.maxImageWidth || MATCH_IMAGE_DEFAULT_MAX_WIDTH) || MATCH_IMAGE_DEFAULT_MAX_WIDTH;
@@ -2729,9 +2770,7 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
         ctx.drawImage(img, 0, 0, w, h);
         const out = canvas.toDataURL('image/jpeg', quality);
         const base64 = out.split(',')[1] || '';
-        const stamp = new Date().toISOString().replace(/[-:.TZ]/g,'').slice(0,14);
-        const rand = Math.random().toString(36).slice(2,8);
-        const imageId = `${stamp}-${rand}`;
+        const imageId = createImageUploadId();
         return {
           id: imageId,
           fileName: `${imageId}.jpg`,
@@ -2743,7 +2782,10 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
           originalSize: file.size || 0,
           size: Math.round(base64.length * 3 / 4)
         };
-      }));
+      })).catch(err => {
+        logImageDebug('compress failed, fallback to raw upload', {name:file && file.name, type:file && file.type, message:err && err.message});
+        return rawImageFilePayload(file);
+      });
     }
     function uploadMatchImages(files){
       const match = currentPredictionMatch();
@@ -2757,17 +2799,24 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
         }
         const arr = Array.from(files).filter(f => /^image\//i.test(f.type || '') || /\.(png|jpe?g|webp|gif|heic)$/i.test(f.name || ''));
         if(!arr.length){ setMatchImageStatus(imageText('imageUploadFail'), 'error'); return; }
-        const jobs = arr.map(file => compressImageFile(file, cfg));
-        return $.when.apply($, jobs).then(function(){
-          const images = jobs.length === 1 ? [arguments[0]] : Array.from(arguments);
-          logImageDebug('upload request', {matchKey, count:images.length, url:cloudApi(`/api/matches/${encodeURIComponent(matchKey)}/images`)});
+        const jobs = arr.map(file => Promise.resolve(compressImageFile(file, cfg)));
+        return Promise.all(jobs).then(images => {
+          const validImages = images.filter(x => x && x.base64);
+          if(!validImages.length){
+            setMatchImageStatus(imageText('imageEncodeFail'), 'error');
+            return;
+          }
+          if(validImages.some(x => x.rawUpload)){
+            setMatchImageStatus(imageText('imageEncodeFail'));
+          }
+          logImageDebug('upload request', {matchKey, count:validImages.length, rawCount:validImages.filter(x => x.rawUpload).length, url:cloudApi(`/api/matches/${encodeURIComponent(matchKey)}/images`)});
           return $.ajax({
             url: cloudApi(`/api/matches/${encodeURIComponent(matchKey)}/images`),
             method: 'POST',
             contentType: 'application/json; charset=utf-8',
             dataType: 'json',
-            timeout: 60000,
-            data: JSON.stringify({password: cfg.appPassword || '', images})
+            timeout: 90000,
+            data: JSON.stringify({password: cfg.appPassword || '', images: validImages})
           }).done(res => {
             logImageDebug('upload done', res);
             setMatchImageStatus(imageText('imageUploadDone'), 'ok');
@@ -2776,8 +2825,9 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
             logImageDebug('upload failed', xhr && {status:xhr.status, response:xhr.responseText});
             setMatchImageStatus(ajaxErrorMessage(xhr, imageText('imageUploadFail')), 'error');
           });
-        }, () => {
-          setMatchImageStatus(imageText('imageUploadFail'), 'error');
+        }).catch(err => {
+          logImageDebug('prepare upload failed', {message: err && err.message});
+          setMatchImageStatus(`${imageText('imageUploadFail')}（${err && err.message ? err.message : 'prepare failed'}）`, 'error');
         });
       });
     }

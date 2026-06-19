@@ -41,6 +41,8 @@ function extContentType(path){
   if(p.endsWith('.png')) return 'image/png';
   if(p.endsWith('.webp')) return 'image/webp';
   if(p.endsWith('.gif')) return 'image/gif';
+  if(p.endsWith('.heic')) return 'image/heic';
+  if(p.endsWith('.heif')) return 'image/heif';
   return 'image/jpeg';
 }
 function safeFileName(value){
