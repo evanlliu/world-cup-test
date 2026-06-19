@@ -1,19 +1,5 @@
 {
   "matchKey": "test",
-  "updatedAt": "2026-06-19T02:24:33.533Z",
-  "images": [
-    {
-      "id": "test-image-001",
-      "fileName": "test-image-001.png",
-      "path": "worldcup-cloud/match-images/test/test-image-001.png",
-      "contentType": "image/png",
-      "width": 1,
-      "height": 1,
-      "size": 68,
-      "originalName": "",
-      "originalSize": null,
-      "createdAt": "2026-06-19T02:24:33.533Z",
-      "sha": "e0ccec79f1b36f25d0ea94a047499d8b63045bba"
-    }
-  ]
+  "updatedAt": "2026-06-19T02:27:33.285Z",
+  "images": []
 }
