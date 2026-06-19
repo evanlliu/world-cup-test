@@ -1,19 +1,5 @@
 {
   "matchKey": "2026-06-18-m04-mexico-vs-south-korea",
-  "updatedAt": "2026-06-19T02:58:30.612Z",
-  "images": [
-    {
-      "id": "20260619025829-8rb88l",
-      "fileName": "20260619025829-8rb88l.jpg",
-      "path": "worldcup-cloud/match-images/2026-06-18-m04-mexico-vs-south-korea/20260619025829-8rb88l.jpg",
-      "contentType": "image/jpeg",
-      "width": 736,
-      "height": 1600,
-      "size": 164310,
-      "originalName": "IMG_4875.png",
-      "originalSize": 670265,
-      "createdAt": "2026-06-19T02:58:30.612Z",
-      "sha": "167fb2c52a85776cb45a72b236e01c602a0e0fe2"
-    }
-  ]
+  "updatedAt": "2026-06-19T04:04:58.838Z",
+  "images": []
 }
