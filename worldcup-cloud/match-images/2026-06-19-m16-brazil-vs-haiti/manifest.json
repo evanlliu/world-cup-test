@@ -1,6 +1,6 @@
 {
   "matchKey": "2026-06-19-m16-brazil-vs-haiti",
-  "updatedAt": "2026-06-19T23:30:44.129Z",
+  "updatedAt": "2026-06-20T00:48:36.677Z",
   "images": [
     {
       "id": "20260619233041-6g75o7",
@@ -14,6 +14,19 @@
       "originalSize": 2010607,
       "createdAt": "2026-06-19T23:30:44.129Z",
       "sha": "72ec1b4c7a10f0c50ef70a302488d54a0c3d8255"
+    },
+    {
+      "id": "20260620004835-67qddj",
+      "fileName": "20260620004835-67qddj.png",
+      "path": "worldcup-cloud/match-images/2026-06-19-m16-brazil-vs-haiti/20260620004835-67qddj.png",
+      "contentType": "image/png",
+      "width": 379,
+      "height": 398,
+      "size": 13362,
+      "originalName": "43.png",
+      "originalSize": 13362,
+      "createdAt": "2026-06-20T00:48:36.677Z",
+      "sha": "f40e6400a3a72098f7082a2580cbb337b4dad8dc"
     }
   ]
 }
