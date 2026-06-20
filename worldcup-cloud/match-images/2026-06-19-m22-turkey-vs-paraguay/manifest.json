@@ -1,6 +1,6 @@
 {
   "matchKey": "2026-06-19-m22-turkey-vs-paraguay",
-  "updatedAt": "2026-06-19T23:30:58.909Z",
+  "updatedAt": "2026-06-20T02:40:06.277Z",
   "images": [
     {
       "id": "20260619233056-vr69hv",
@@ -14,6 +14,19 @@
       "originalSize": 1978114,
       "createdAt": "2026-06-19T23:30:58.909Z",
       "sha": "cd3dee6e2871d641f104278f72fd8e026be5f4ab"
+    },
+    {
+      "id": "20260620024005-f4exqs",
+      "fileName": "20260620024005-f4exqs.png",
+      "path": "worldcup-cloud/match-images/2026-06-19-m22-turkey-vs-paraguay/20260620024005-f4exqs.png",
+      "contentType": "image/png",
+      "width": 379,
+      "height": 398,
+      "size": 13362,
+      "originalName": "43.png",
+      "originalSize": 13362,
+      "createdAt": "2026-06-20T02:40:06.277Z",
+      "sha": "f40e6400a3a72098f7082a2580cbb337b4dad8dc"
     }
   ]
 }
