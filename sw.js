@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wc2026-pwa-v11-team-detail-click-fix';
+const CACHE_NAME = 'wc2026-pwa-v12-mobile-four-cards';
 const APP_SHELL = [
   './',
   './index.html',
