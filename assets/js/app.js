@@ -12,7 +12,7 @@
     const TZ_MAIN = "America/Monterrey";
     const TZ_CHINA = "Asia/Shanghai";
     const CACHE_KEY = "wc2026_schedule_mobile_ui_v1";
-    const PREDICTION_CACHE_KEY = 'wc2026_prediction_cache_v10';
+    const PREDICTION_CACHE_KEY = 'wc2026_prediction_cache_v11';
     const SCORE_CACHE_KEY = "wc2026_score_cache_v9";
     const SCORE_REFRESH_MS = 30000;
 
@@ -106,13 +106,13 @@
     }
 
 
-    const APP_VERSION = "v10";
+    const APP_VERSION = "v11";
 
     const I18N = {
       zh: {
         htmlLang:"zh-CN",
         title:"2026 世界杯",
-        browserTitle:"2026 世界杯赛程 v10",
+        browserTitle:"2026 世界杯赛程 v11",
         pwaAppName:"世界杯2026",
         langZhLabel:"中文",
         langEnLabel:"英文",
@@ -178,7 +178,7 @@
       en: {
         htmlLang:"en",
         title:"World Cup 2026",
-        browserTitle:"World Cup 2026 Schedule v10",
+        browserTitle:"World Cup 2026 Schedule v11",
         pwaAppName:"World Cup 2026",
         langZhLabel:"Chinese",
         langEnLabel:"English",
@@ -244,7 +244,7 @@
       tr: {
         htmlLang:"tr",
         title:"2026 Dünya Kupası",
-        browserTitle:"2026 Dünya Kupası Programı v10",
+        browserTitle:"2026 Dünya Kupası Programı v11",
         pwaAppName:"Dünya Kupası 2026",
         langZhLabel:"Çince",
         langEnLabel:"İngilizce",
@@ -3511,6 +3511,16 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
 
         // 图片查看器打开时，由查看器自己处理手势，避免全局滚动保护拦截双指缩放/关闭按钮。
         if(target.closest && target.closest('#matchImageViewer')) return;
+
+        // 国家详情页在预测页上层打开时，允许国家详情内容滚动。
+        // 否则移动端全局滚动保护会把 team-page 的 touchmove 拦截掉，看起来像页面打不开/不能操作。
+        if($('#teamPage').length && !$('#teamPage').hasClass('hidden')){
+          if(target.closest && target.closest('.team-page-scroll')) return;
+          if(target.closest && target.closest('.team-page')){
+            e.preventDefault();
+            return;
+          }
+        }
 
         // AI预测页打开时，只允许 AI 页面内容区域滚动。
         if($('#predictionPage').length && !$('#predictionPage').hasClass('hidden')){
