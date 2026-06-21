@@ -1324,7 +1324,7 @@ body.match-image-viewer-open{overflow:hidden}.match-image-viewer{position:fixed;
 }
 
 
-/* v10：国家详情页，点击预测页左右球队打开 */
+/* v11：修复移动端国家详情页层级与滚动，点击预测页左右球队打开 */
 .prediction-team-link{
   appearance:none;-webkit-appearance:none;border:0;background:transparent;padding:0;margin:0;
   font-family:inherit;cursor:pointer;border-radius:14px;display:block;width:100%;color:#fff;-webkit-tap-highlight-color:transparent;
@@ -1333,7 +1333,7 @@ body.match-image-viewer-open{overflow:hidden}.match-image-viewer{position:fixed;
 .prediction-team-link:active{transform:scale(.96)}
 .prediction-team-link:focus-visible{outline:2px solid rgba(255,255,255,.88);outline-offset:3px}
 .team-page{
-  position:fixed;inset:0;z-index:96;background:
+  position:fixed;inset:0;z-index:130!important;background:
     radial-gradient(circle at top right, rgba(99,130,255,.14), rgba(99,130,255,0) 30%),
     linear-gradient(180deg,#f4f7ff 0%,#f8faff 38%,#f7f8fc 100%);
   color:var(--text);display:flex;flex-direction:column;overflow:hidden;
