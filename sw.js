@@ -1,11 +1,11 @@
-const CACHE_NAME = 'wc2026-pwa-v9-clear-original-viewer';
+const CACHE_NAME = 'wc2026-pwa-v10-team-detail-page';
 const APP_SHELL = [
   './',
   './index.html',
-  './assets/css/app.css?v=9',
-  './assets/js/app.js?v=9',
-  './assets/prediction-hero-bg.jpg?v=9',
-  './worldcup-cloud/config.json?v=9',
+  './assets/css/app.css?v=10',
+  './assets/js/app.js?v=10',
+  './assets/prediction-hero-bg.jpg?v=10',
+  './worldcup-cloud/config.json?v=10',
   './manifest.webmanifest',
   './manifest.zh.webmanifest',
   './manifest.en.webmanifest',

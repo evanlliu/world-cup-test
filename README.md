@@ -1,4 +1,10 @@
-## v9 原图清晰查看 + 实时拉取图片版
+## v10 国家详情页版
+
+- 点击预测页顶部左右球队，可打开对应国家详情页。
+- 国家详情页显示本届全部比赛、已结束比赛/历史比赛、历届世界杯表现。
+- 比赛卡片可点击返回对应比赛详情。
+
+## v10 原图清晰查看 + 实时拉取图片版
 
 基于 v8 继续优化图片模块。
 
@@ -11,7 +17,7 @@
 - `worldcup-storage-worker.js` 的图片读取响应改为 `Cache-Control: no-store`，避免 Worker 图片被长期缓存。
 - PC 端支持鼠标滚轮以鼠标位置为中心放大/缩小。
 - 移动端双指缩放继续保留，且以双指中心缩放。
-- Service Worker 缓存名更新为 `wc2026-pwa-v9-clear-original-viewer`。
+- Service Worker 缓存名更新为 `wc2026-pwa-v10-clear-original-viewer`。
 
 ### 发布说明
 
