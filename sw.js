@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wc2026-pwa-v10-team-detail-page';
+const CACHE_NAME = 'wc2026-pwa-v11-team-detail-click-fix';
 const APP_SHELL = [
   './',
   './index.html',
