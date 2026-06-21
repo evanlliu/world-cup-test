@@ -12,7 +12,7 @@
     const TZ_MAIN = "America/Monterrey";
     const TZ_CHINA = "Asia/Shanghai";
     const CACHE_KEY = "wc2026_schedule_mobile_ui_v1";
-    const PREDICTION_CACHE_KEY = 'wc2026_prediction_cache_v9';
+    const PREDICTION_CACHE_KEY = 'wc2026_prediction_cache_v10';
     const SCORE_CACHE_KEY = "wc2026_score_cache_v9";
     const SCORE_REFRESH_MS = 30000;
 
@@ -106,13 +106,13 @@
     }
 
 
-    const APP_VERSION = "v9";
+    const APP_VERSION = "v10";
 
     const I18N = {
       zh: {
         htmlLang:"zh-CN",
         title:"2026 世界杯",
-        browserTitle:"2026 世界杯赛程 v9",
+        browserTitle:"2026 世界杯赛程 v10",
         pwaAppName:"世界杯2026",
         langZhLabel:"中文",
         langEnLabel:"英文",
@@ -178,7 +178,7 @@
       en: {
         htmlLang:"en",
         title:"World Cup 2026",
-        browserTitle:"World Cup 2026 Schedule v9",
+        browserTitle:"World Cup 2026 Schedule v10",
         pwaAppName:"World Cup 2026",
         langZhLabel:"Chinese",
         langEnLabel:"English",
@@ -244,7 +244,7 @@
       tr: {
         htmlLang:"tr",
         title:"2026 Dünya Kupası",
-        browserTitle:"2026 Dünya Kupası Programı v9",
+        browserTitle:"2026 Dünya Kupası Programı v10",
         pwaAppName:"Dünya Kupası 2026",
         langZhLabel:"Çince",
         langEnLabel:"İngilizce",
@@ -3066,6 +3066,123 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
       });
     }
 
+
+    function teamDetailText(key){
+      const zh = {
+        back:'返回', currentAll:'本届全部比赛', finishedMatches:'历史比赛 / 已结束比赛', worldCupHistory:'历届世界杯表现', noMatches:'暂无比赛数据', noFinished:'暂无已结束比赛', clickHint:'点击比赛可进入详情', fifa:'FIFA排名', power:'模型实力', record:'本届战绩', played:'场', win:'胜', draw:'平', loss:'负', goals:'进失球', points:'积分', upcoming:'未开赛', live:'进行中', finished:'已结束', notPlayed:'未参赛', year:'年份', result:'成绩'};
+      const en = {
+        back:'Back', currentAll:'All 2026 matches', finishedMatches:'History / finished matches', worldCupHistory:'World Cup history', noMatches:'No match data yet', noFinished:'No finished matches yet', clickHint:'Tap a match to open details', fifa:'FIFA rank', power:'Model power', record:'2026 record', played:'P', win:'W', draw:'D', loss:'L', goals:'GF-GA', points:'Pts', upcoming:'Upcoming', live:'Live', finished:'Finished', notPlayed:'Did not play', year:'Year', result:'Result'};
+      const tr = {
+        back:'Geri', currentAll:'2026 maçları', finishedMatches:'Geçmiş / biten maçlar', worldCupHistory:'Dünya Kupası geçmişi', noMatches:'Maç verisi yok', noFinished:'Biten maç yok', clickHint:'Detay için maça dokun', fifa:'FIFA sırası', power:'Model gücü', record:'2026 kaydı', played:'M', win:'G', draw:'B', loss:'M', goals:'A-Y', points:'Puan', upcoming:'Yaklaşan', live:'Canlı', finished:'Bitti', notPlayed:'Katılmadı', year:'Yıl', result:'Sonuç'};
+      const dict = app.lang === 'zh' ? zh : (app.lang === 'tr' ? tr : en);
+      return dict[key] || zh[key] || key;
+    }
+    function matchesForTeam(team){
+      const n = normalizeTeam(team);
+      return matchItems().filter(m => normalizeTeam(m.team1) === n || normalizeTeam(m.team2) === n)
+        .slice().sort((a,b) => matchDate(a) - matchDate(b));
+    }
+    function teamMatchSideInfo(match, team){
+      const n = normalizeTeam(team);
+      const isLeft = normalizeTeam(match.team1) === n;
+      return {
+        isLeft,
+        team: isLeft ? match.team1 : match.team2,
+        opponent: isLeft ? match.team2 : match.team1
+      };
+    }
+    function teamScoreBundle(match, team){
+      const score = getScoreForMatch(match);
+      const st = scoreStatusOf(matchDate(match), score);
+      const sTeam = scoreForTeam(score, team);
+      const side = teamMatchSideInfo(match, team);
+      const sOpp = scoreForTeam(score, side.opponent);
+      const has = st !== 'upcoming' && sTeam !== '' && sOpp !== '';
+      return {score, st, sTeam, sOpp, has, side};
+    }
+    function teamRecordSummary(team){
+      let played = 0, win = 0, draw = 0, loss = 0, gf = 0, ga = 0, pts = 0;
+      matchesForTeam(team).forEach(m => {
+        const b = teamScoreBundle(m, team);
+        if(!b.has || b.st === 'upcoming') return;
+        const a = Number(b.sTeam), o = Number(b.sOpp);
+        if(Number.isNaN(a) || Number.isNaN(o)) return;
+        played++; gf += a; ga += o;
+        if(a > o){ win++; pts += 3; }
+        else if(a === o){ draw++; pts += 1; }
+        else loss++;
+      });
+      return {played, win, draw, loss, gf, ga, pts};
+    }
+    function teamHistoryRows(team){
+      return WORLD_CUP_RANK_YEARS.map(year => {
+        const rank = worldCupRankForYear(team, year);
+        const text = rank == null
+          ? teamDetailText('notPlayed')
+          : (app.lang === 'zh' ? `第${rank}名` : `#${rank}`);
+        return `<div class="team-history-row${rank == null ? ' empty' : ''}"><span>${esc(year)}</span><strong>${esc(text)}</strong></div>`;
+      }).join('');
+    }
+    function teamStatusLabel(st, score){
+      if(st === 'live') return teamDetailText('live');
+      if(st === 'finished') return teamDetailText('finished');
+      return teamDetailText('upcoming');
+    }
+    function teamMatchCardHtml(match, team){
+      const b = teamScoreBundle(match, team);
+      const mainTz = primaryTimeZone();
+      const secondTz = secondaryTimeZone();
+      const status = scoreDetailText(b.score, b.st) || teamStatusLabel(b.st, b.score);
+      const scoreText = b.has ? `${b.sTeam} - ${b.sOpp}` : fmtTime(matchDate(match), mainTz);
+      const opponent = b.side.opponent;
+      const scoreClass = b.has ? 'has-score' : 'time-score';
+      const dateText = `${fmtDateTime(matchDate(match), mainTz)} · ${timeZoneLabel(secondTz)} ${fmtDateTime(matchDate(match), secondTz)}`;
+      const meta = `${stageLabel(match.round)}${match.group ? ' ' + groupLabel(match.group) : ''} · ${groundName(match.ground)}${groundCountryName(match.ground) ? ' · ' + groundCountryName(match.ground) : ''}`;
+      return `<article class="team-detail-match-card" data-match-idx="${esc(match._idx)}" role="button" tabindex="0">
+        <div class="team-detail-match-top"><span>${esc(dateText)}</span><em class="${esc(b.st)}">${esc(status)}</em></div>
+        <div class="team-detail-match-main">
+          <div class="team-detail-match-side self"><span class="flag-wrap">${flagImgHtml(b.side.team)}</span><strong>${esc(teamName(b.side.team))}</strong></div>
+          <div class="team-detail-match-score ${scoreClass}">${esc(scoreText)}</div>
+          <div class="team-detail-match-side"><span class="flag-wrap">${flagImgHtml(opponent)}</span><strong>${esc(teamName(opponent))}</strong></div>
+        </div>
+        <div class="team-detail-match-meta">${esc(meta)}</div>
+      </article>`;
+    }
+    function renderTeamDetailPage(team){
+      const list = matchesForTeam(team);
+      const finished = list.filter(m => teamScoreBundle(m, team).st === 'finished');
+      const rec = teamRecordSummary(team);
+      const rank = fifaWorldRank(team);
+      const flag = flagUrl(team);
+      const allHtml = list.length ? list.map(m => teamMatchCardHtml(m, team)).join('') : `<div class="team-detail-empty">${esc(teamDetailText('noMatches'))}</div>`;
+      const finishedHtml = finished.length ? finished.map(m => teamMatchCardHtml(m, team)).join('') : `<div class="team-detail-empty">${esc(teamDetailText('noFinished'))}</div>`;
+      $('#teamPageHero').html(`<div class="team-detail-hero-bg"></div>
+        <div class="team-detail-nav"><button class="team-detail-back" id="teamPageBackBtn" type="button">‹</button><div class="team-detail-nav-title">${esc(teamName(team))}</div></div>
+        <div class="team-detail-main-head">
+          <div class="team-detail-flag">${flag ? `<img src="${esc(flag)}" alt="${esc(teamName(team))}">` : placeholderFlag(team)}</div>
+          <div class="team-detail-title-block"><h2>${esc(teamName(team))}</h2><p>${esc(fifaWorldRankText(team))}</p></div>
+        </div>
+        <div class="team-detail-stats">
+          <div><span>${esc(teamDetailText('record'))}</span><strong>${rec.win}-${rec.draw}-${rec.loss}</strong></div>
+          <div><span>${esc(teamDetailText('points'))}</span><strong>${rec.pts}</strong></div>
+          <div><span>${esc(teamDetailText('goals'))}</span><strong>${rec.gf}-${rec.ga}</strong></div>
+          <div><span>${esc(teamDetailText('power'))}</span><strong>${Math.round(teamPower(team))}</strong></div>
+        </div>`);
+      $('#teamPageContent').html(`<section class="team-detail-card team-detail-tip">${esc(teamDetailText('clickHint'))}</section>
+        <section class="team-detail-card"><div class="team-detail-section-title"><h3>${esc(teamDetailText('currentAll'))}</h3><span>${list.length}</span></div><div class="team-detail-match-list">${allHtml}</div></section>
+        <section class="team-detail-card"><div class="team-detail-section-title"><h3>${esc(teamDetailText('finishedMatches'))}</h3><span>${finished.length}</span></div><div class="team-detail-match-list">${finishedHtml}</div></section>
+        <section class="team-detail-card"><div class="team-detail-section-title"><h3>${esc(teamDetailText('worldCupHistory'))}</h3><span>${esc(teamDetailText('fifa'))}${rank ? ' #' + esc(rank) : ''}</span></div><div class="team-history-grid">${teamHistoryRows(team)}</div></section>`);
+    }
+    function openTeamPage(team){
+      if(!team) return;
+      app.teamDetailTeam = team;
+      renderTeamDetailPage(team);
+      $('#teamPage').removeClass('hidden');
+    }
+    function closeTeamPage(){
+      $('#teamPage').addClass('hidden');
+      app.teamDetailTeam = null;
+    }
     function renderPredictionPage(){
       const idx = Number(app.predictionIndex);
       const raw = matchItems()[idx] || app.matches[idx];
@@ -3101,20 +3218,20 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
       $('#predictionLiveTab').text(pt('liveTab')).toggleClass('active', app.predictionTab === 'live');
       $('#predictionHero').html(`
         <div class="prediction-top-teams">
-          <div class="prediction-mini-team">
+          <button class="prediction-mini-team prediction-team-link" type="button" data-team="${esc(match.team1)}" aria-label="${esc(teamName(match.team1))}">
             <div class="flag-wrap">${f1 ? `<img src="${esc(f1)}" alt="${esc(teamName(match.team1))}">` : placeholderFlag(match.team1)}</div>
             <div>${esc(teamName(match.team1))}</div>
-          </div>
+          </button>
           <div class="prediction-center">
             <div class="prediction-badge">${esc(heroBadge)}</div>
             <div class="prediction-kick">${esc(heroMain)}</div>
             <div class="prediction-status">${esc(timeZoneLabel(mainTz))}: ${esc(fmtTime(match._date, mainTz))} ｜ ${esc(timeZoneLabel(secondTz))}: ${esc(fmtDateTime(match._date, secondTz))}</div>
             <div class="prediction-status soft">${esc(statusLabel)}</div>
           </div>
-          <div class="prediction-mini-team">
+          <button class="prediction-mini-team prediction-team-link" type="button" data-team="${esc(match.team2)}" aria-label="${esc(teamName(match.team2))}">
             <div class="flag-wrap">${f2 ? `<img src="${esc(f2)}" alt="${esc(teamName(match.team2))}">` : placeholderFlag(match.team2)}</div>
             <div>${esc(teamName(match.team2))}</div>
-          </div>
+          </button>
         </div>
       `);
       if(app.predictionTab === 'live'){
@@ -3258,6 +3375,7 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
       $('#predictionPage').removeClass('hidden');
     }
     function closePredictionPage(){
+      closeTeamPage();
       $('#predictionPage').addClass('hidden');
       app.predictionIndex = null;
       renderLivePanel();
@@ -3553,6 +3671,10 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
           openPredictionPage($(this).data('match-idx'));
         }
       });
+      $(document).on('click', '.prediction-team-link', function(e){ e.preventDefault(); e.stopPropagation(); openTeamPage($(this).data('team')); });
+      $(document).on('click', '#teamPageBackBtn', function(e){ e.preventDefault(); closeTeamPage(); });
+      $(document).on('click', '.team-detail-match-card', function(e){ e.preventDefault(); const idx = $(this).data('match-idx'); closeTeamPage(); if(idx !== undefined && idx !== null && idx !== '') openPredictionPage(idx); });
+      $(document).on('keydown', '.team-detail-match-card', function(e){ if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); const idx = $(this).data('match-idx'); closeTeamPage(); if(idx !== undefined && idx !== null && idx !== '') openPredictionPage(idx); } });
       $('#predictionBackBtn').on('click', closePredictionPage);
       $('#predictionPreviewTab').on('click', ()=>{ app.predictionTab = 'preview'; renderPredictionPage(); });
       $('#predictionLiveTab').on('click', ()=>{ app.predictionTab = 'live'; renderPredictionPage(); });
