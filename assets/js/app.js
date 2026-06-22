@@ -12,7 +12,7 @@
     const TZ_MAIN = "America/Monterrey";
     const TZ_CHINA = "Asia/Shanghai";
     const CACHE_KEY = "wc2026_schedule_mobile_ui_v1";
-    const PREDICTION_CACHE_KEY = 'wc2026_prediction_cache_v12';
+    const PREDICTION_CACHE_KEY = 'wc2026_prediction_cache_v14';
     const SCORE_CACHE_KEY = "wc2026_score_cache_v9";
     const SCORE_REFRESH_MS = 30000;
 
@@ -106,13 +106,13 @@
     }
 
 
-    const APP_VERSION = "v12";
+    const APP_VERSION = "v14";
 
     const I18N = {
       zh: {
         htmlLang:"zh-CN",
         title:"2026 世界杯",
-        browserTitle:"2026 世界杯赛程 v12",
+        browserTitle:"2026 世界杯赛程 v14",
         pwaAppName:"世界杯2026",
         langZhLabel:"中文",
         langEnLabel:"英文",
@@ -178,7 +178,7 @@
       en: {
         htmlLang:"en",
         title:"World Cup 2026",
-        browserTitle:"World Cup 2026 Schedule v12",
+        browserTitle:"World Cup 2026 Schedule v14",
         pwaAppName:"World Cup 2026",
         langZhLabel:"Chinese",
         langEnLabel:"English",
@@ -244,7 +244,7 @@
       tr: {
         htmlLang:"tr",
         title:"2026 Dünya Kupası",
-        browserTitle:"2026 Dünya Kupası Programı v12",
+        browserTitle:"2026 Dünya Kupası Programı v14",
         pwaAppName:"Dünya Kupası 2026",
         langZhLabel:"Çince",
         langEnLabel:"İngilizce",
@@ -592,7 +592,7 @@
       todayOnly: false,
       activeTab: "schedule",
       predictionIndex: null,
-      predictionTab: "live",
+      predictionTab: "preview",
       predictionLiveLoading: false,
       loadedFlags: new Set(),
       lastForegroundRefreshAt: 0,
@@ -3370,7 +3370,7 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
     }
     function openPredictionPage(idx){
       app.predictionIndex = Number(idx);
-      app.predictionTab = "live";
+      app.predictionTab = "preview";
       renderPredictionPage();
       $('#predictionPage').removeClass('hidden');
     }

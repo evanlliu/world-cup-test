@@ -1,11 +1,11 @@
-const CACHE_NAME = 'wc2026-pwa-v12-mobile-four-cards';
+const CACHE_NAME = 'wc2026-pwa-v14-default-preview';
 const APP_SHELL = [
   './',
   './index.html',
-  './assets/css/app.css?v=10',
-  './assets/js/app.js?v=10',
-  './assets/prediction-hero-bg.jpg?v=10',
-  './worldcup-cloud/config.json?v=10',
+  './assets/css/app.css?v=14',
+  './assets/js/app.js?v=14',
+  './assets/prediction-hero-bg.jpg?v=14',
+  './worldcup-cloud/config.json?v=14',
   './manifest.webmanifest',
   './manifest.zh.webmanifest',
   './manifest.en.webmanifest',
