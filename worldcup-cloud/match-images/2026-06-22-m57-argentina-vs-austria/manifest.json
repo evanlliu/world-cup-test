@@ -1,6 +1,6 @@
 {
   "matchKey": "2026-06-22-m57-argentina-vs-austria",
-  "updatedAt": "2026-06-22T17:51:51.795Z",
+  "updatedAt": "2026-06-22T17:55:47.959Z",
   "images": [
     {
       "id": "20260622175148-bd6zbo",
@@ -14,6 +14,19 @@
       "originalSize": 913483,
       "createdAt": "2026-06-22T17:51:51.795Z",
       "sha": "bfbb2fa8a691fa5387b8220611cdea2c28dd9300"
+    },
+    {
+      "id": "20260622175546-ystvbc",
+      "fileName": "20260622175546-ystvbc.png",
+      "path": "worldcup-cloud/match-images/2026-06-22-m57-argentina-vs-austria/20260622175546-ystvbc.png",
+      "contentType": "image/png",
+      "width": 396,
+      "height": 616,
+      "size": 17424,
+      "originalName": "13.png",
+      "originalSize": 17424,
+      "createdAt": "2026-06-22T17:55:47.959Z",
+      "sha": "866a55df43becbff127ea7a7486d8c9f742cff97"
     }
   ]
 }
