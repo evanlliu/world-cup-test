@@ -1,5 +1,19 @@
 {
   "matchKey": "2026-06-22-m58-jordan-vs-algeria",
-  "updatedAt": "2026-06-23T02:55:50.494Z",
-  "images": []
+  "updatedAt": "2026-06-23T02:56:00.293Z",
+  "images": [
+    {
+      "id": "20260623025559-zk0nu9",
+      "fileName": "20260623025559-zk0nu9.png",
+      "path": "worldcup-cloud/match-images/2026-06-22-m58-jordan-vs-algeria/20260623025559-zk0nu9.png",
+      "contentType": "image/png",
+      "width": 396,
+      "height": 616,
+      "size": 17424,
+      "originalName": "13.png",
+      "originalSize": 17424,
+      "createdAt": "2026-06-23T02:56:00.293Z",
+      "sha": "866a55df43becbff127ea7a7486d8c9f742cff97"
+    }
+  ]
 }
