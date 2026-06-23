@@ -12,7 +12,7 @@
     const TZ_MAIN = "America/Monterrey";
     const TZ_CHINA = "Asia/Shanghai";
     const CACHE_KEY = "wc2026_schedule_mobile_ui_v1";
-    const PREDICTION_CACHE_KEY = 'wc2026_prediction_cache_v15';
+    const PREDICTION_CACHE_KEY = 'wc2026_prediction_cache_v16';
     const SCORE_CACHE_KEY = "wc2026_score_cache_v9";
     const SCORE_REFRESH_MS = 30000;
 
@@ -106,13 +106,13 @@
     }
 
 
-    const APP_VERSION = "v15";
+    const APP_VERSION = "v16";
 
     const I18N = {
       zh: {
         htmlLang:"zh-CN",
         title:"2026 世界杯",
-        browserTitle:"2026 世界杯赛程 v15",
+        browserTitle:"2026 世界杯赛程 v16",
         pwaAppName:"世界杯2026",
         langZhLabel:"中文",
         langEnLabel:"英文",
@@ -178,7 +178,7 @@
       en: {
         htmlLang:"en",
         title:"World Cup 2026",
-        browserTitle:"World Cup 2026 Schedule v15",
+        browserTitle:"World Cup 2026 Schedule v16",
         pwaAppName:"World Cup 2026",
         langZhLabel:"Chinese",
         langEnLabel:"English",
@@ -244,7 +244,7 @@
       tr: {
         htmlLang:"tr",
         title:"2026 Dünya Kupası",
-        browserTitle:"2026 Dünya Kupası Programı v15",
+        browserTitle:"2026 Dünya Kupası Programı v16",
         pwaAppName:"Dünya Kupası 2026",
         langZhLabel:"Çince",
         langEnLabel:"İngilizce",
@@ -3494,50 +3494,59 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
       if(window.__livePanelHorizontalScrollReady) return;
       window.__livePanelHorizontalScrollReady = true;
 
-      let scroller = null;
-      let startX = 0;
-      let startY = 0;
-      let startLeft = 0;
-      let moved = false;
+      // 移动端不要用 JS 强制设置 scrollLeft。
+      // iOS Safari 原生 overflow-x + -webkit-overflow-scrolling 才最丝滑；
+      // 这里只负责识别“真实横向拖动”，用于避免拖动后误触打开详情。
+      let touchScroller = null;
+      let touchStartX = 0;
+      let touchStartY = 0;
+      let touchMaxDx = 0;
+      let touchMaxDy = 0;
+      let touchMovedHorizontally = false;
 
-      function reset(){
-        if(scroller) scroller.classList.remove('is-touch-dragging');
-        scroller = null;
-        moved = false;
+      function resetTouchScroller(){
+        if(touchScroller) touchScroller.classList.remove('is-touch-dragging');
+        touchScroller = null;
+        touchMaxDx = 0;
+        touchMaxDy = 0;
+        touchMovedHorizontally = false;
       }
 
       document.addEventListener('touchstart', function(e){
         const target = e.target;
         const el = target && target.closest ? target.closest('.live-panel-list') : null;
         if(!el || !e.touches || !e.touches[0]) return;
-        scroller = el;
-        startX = e.touches[0].clientX;
-        startY = e.touches[0].clientY;
-        startLeft = el.scrollLeft;
-        moved = false;
+        touchScroller = el;
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+        touchMaxDx = 0;
+        touchMaxDy = 0;
+        touchMovedHorizontally = false;
       }, {passive:true});
 
       document.addEventListener('touchmove', function(e){
-        if(!scroller || !e.touches || !e.touches[0]) return;
+        if(!touchScroller || !e.touches || !e.touches[0]) return;
         const t0 = e.touches[0];
-        const dx = t0.clientX - startX;
-        const dy = t0.clientY - startY;
-        if(Math.abs(dx) > 6 && Math.abs(dx) > Math.abs(dy) * 1.08){
-          moved = true;
-          scroller.classList.add('is-touch-dragging');
-          scroller.scrollLeft = startLeft - dx;
-          window.__livePanelSwipeSuppressUntil = Date.now() + 240;
-          e.preventDefault();
-          e.stopPropagation();
+        const dx = Math.abs(t0.clientX - touchStartX);
+        const dy = Math.abs(t0.clientY - touchStartY);
+        touchMaxDx = Math.max(touchMaxDx, dx);
+        touchMaxDy = Math.max(touchMaxDy, dy);
+        if(dx > 14 && dx > dy * 1.25){
+          touchMovedHorizontally = true;
+          touchScroller.classList.add('is-touch-dragging');
         }
-      }, {passive:false});
+        // 不 preventDefault，不手动改 scrollLeft，让浏览器原生惯性滚动接管。
+      }, {passive:true});
 
       document.addEventListener('touchend', function(){
-        if(moved) window.__livePanelSwipeSuppressUntil = Date.now() + 260;
-        reset();
+        if(touchMovedHorizontally && touchMaxDx > 18){
+          window.__livePanelSwipeSuppressUntil = Date.now() + 220;
+        }
+        resetTouchScroller();
       }, {passive:true});
-      document.addEventListener('touchcancel', reset, {passive:true});
+      document.addEventListener('touchcancel', resetTouchScroller, {passive:true});
 
+      // PC 端保留鼠标拖动横向滚动。
       let mouseScroller = null;
       let mouseDown = false;
       let mouseStartX = 0;
@@ -3547,7 +3556,7 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
       document.addEventListener('mousedown', function(e){
         const target = e.target;
         const el = target && target.closest ? target.closest('.live-panel-list') : null;
-        if(!el) return;
+        if(!el || e.button !== 0) return;
         mouseScroller = el;
         mouseDown = true;
         mouseMoved = false;
@@ -3559,10 +3568,11 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
       window.addEventListener('mousemove', function(e){
         if(!mouseDown || !mouseScroller) return;
         const dx = e.pageX - mouseStartX;
-        if(Math.abs(dx) > 5){
+        if(Math.abs(dx) > 6){
           mouseMoved = true;
           mouseScroller.scrollLeft = mouseStartLeft - dx;
           window.__livePanelSwipeSuppressUntil = Date.now() + 180;
+          e.preventDefault();
         }
       });
 
