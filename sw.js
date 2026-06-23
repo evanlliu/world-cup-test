@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wc2026-pwa-v15-live-horizontal-scroll';
+const CACHE_NAME = 'wc2026-pwa-v16-live-scroll-smooth-click';
 const APP_SHELL = [
   './',
   './index.html',
