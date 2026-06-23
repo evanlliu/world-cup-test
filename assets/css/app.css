@@ -710,7 +710,7 @@
     .live-mini-flag{width:24px;height:18px;flex:0 0 auto;border-radius:5px;background-size:cover;background-position:center;background-repeat:no-repeat;box-shadow:0 2px 8px rgba(16,24,40,.12), inset 0 0 0 1px rgba(17,24,39,.08)}
     .live-mini-flag--fallback{background:linear-gradient(135deg,#eef2ff,#dfe6f6)}
     .live-match-sub{margin-top:7px;font-size:12px;color:#8d95a4;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center}
-    @media (max-width:680px){.live-panel{margin:0 14px 8px;padding:10px 10px 11px;border-radius:20px}.live-panel-head{margin-bottom:8px}.live-panel-title{font-size:14px}.live-match-card{min-width:236px;padding:10px 11px;border-radius:16px}.live-match-score{font-size:14px;gap:6px}.live-mini-flag{width:22px;height:16px;border-radius:4px}.live-match-mid{font-size:20px}.live-match-sub{font-size:11px}}
+    @media (max-width:680px){.live-panel{margin:0 14px 8px;padding:10px 10px 11px;border-radius:20px}.live-panel-head{margin-bottom:8px}.live-panel-title{font-size:14px}.live-match-card{min-width:min(328px,calc(100vw - 72px));padding:10px 11px;border-radius:16px}.live-match-score{font-size:14px;gap:6px;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)}.live-team-side{gap:6px}.live-match-team{letter-spacing:-.02em}.live-mini-flag{width:22px;height:16px;border-radius:4px}.live-match-mid{font-size:20px}.live-match-sub{font-size:11px}}
 
 
     /* 正在比赛横向滑动修复：移动端允许在赛程列表内部左右滑动查看全部进行中的比赛 */
@@ -740,7 +740,8 @@
         margin-right:-22px;
       }
       .live-match-card{
-        flex-basis:236px;
+        flex:0 0 min(328px,calc(100vw - 72px));
+        max-width:calc(100vw - 72px);
       }
     }
 
