@@ -12,7 +12,7 @@
     const TZ_MAIN = "America/Monterrey";
     const TZ_CHINA = "Asia/Shanghai";
     const CACHE_KEY = "wc2026_schedule_mobile_ui_v1";
-    const PREDICTION_CACHE_KEY = 'wc2026_prediction_cache_v17';
+    const PREDICTION_CACHE_KEY = 'wc2026_prediction_cache_v18';
     const SCORE_CACHE_KEY = "wc2026_score_cache_v9";
     const SCORE_REFRESH_MS = 30000;
 
@@ -106,13 +106,13 @@
     }
 
 
-    const APP_VERSION = "v17";
+    const APP_VERSION = "v18";
 
     const I18N = {
       zh: {
         htmlLang:"zh-CN",
         title:"2026 世界杯",
-        browserTitle:"2026 世界杯赛程 v17",
+        browserTitle:"2026 世界杯赛程 v18",
         pwaAppName:"世界杯2026",
         langZhLabel:"中文",
         langEnLabel:"英文",
@@ -178,7 +178,7 @@
       en: {
         htmlLang:"en",
         title:"World Cup 2026",
-        browserTitle:"World Cup 2026 Schedule v17",
+        browserTitle:"World Cup 2026 Schedule v18",
         pwaAppName:"World Cup 2026",
         langZhLabel:"Chinese",
         langEnLabel:"English",
@@ -244,7 +244,7 @@
       tr: {
         htmlLang:"tr",
         title:"2026 Dünya Kupası",
-        browserTitle:"2026 Dünya Kupası Programı v17",
+        browserTitle:"2026 Dünya Kupası Programı v18",
         pwaAppName:"Dünya Kupası 2026",
         langZhLabel:"Çince",
         langEnLabel:"İngilizce",
@@ -2827,6 +2827,7 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
               <button type="button" data-viewer-action="reset">${esc(imageText('imageReset'))}</button>
               <button type="button" data-viewer-action="zoomIn">＋</button>
               <button type="button" data-viewer-action="next">${esc(imageText('imageNext'))}</button>
+              <button type="button" data-viewer-action="close">${esc(imageText('imageClose'))}</button>
             </div>
           </div>
         </div>`);
