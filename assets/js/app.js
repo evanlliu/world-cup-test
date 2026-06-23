@@ -12,7 +12,7 @@
     const TZ_MAIN = "America/Monterrey";
     const TZ_CHINA = "Asia/Shanghai";
     const CACHE_KEY = "wc2026_schedule_mobile_ui_v1";
-    const PREDICTION_CACHE_KEY = 'wc2026_prediction_cache_v14';
+    const PREDICTION_CACHE_KEY = 'wc2026_prediction_cache_v15';
     const SCORE_CACHE_KEY = "wc2026_score_cache_v9";
     const SCORE_REFRESH_MS = 30000;
 
@@ -106,13 +106,13 @@
     }
 
 
-    const APP_VERSION = "v14";
+    const APP_VERSION = "v15";
 
     const I18N = {
       zh: {
         htmlLang:"zh-CN",
         title:"2026 世界杯",
-        browserTitle:"2026 世界杯赛程 v14",
+        browserTitle:"2026 世界杯赛程 v15",
         pwaAppName:"世界杯2026",
         langZhLabel:"中文",
         langEnLabel:"英文",
@@ -178,7 +178,7 @@
       en: {
         htmlLang:"en",
         title:"World Cup 2026",
-        browserTitle:"World Cup 2026 Schedule v14",
+        browserTitle:"World Cup 2026 Schedule v15",
         pwaAppName:"World Cup 2026",
         langZhLabel:"Chinese",
         langEnLabel:"English",
@@ -244,7 +244,7 @@
       tr: {
         htmlLang:"tr",
         title:"2026 Dünya Kupası",
-        browserTitle:"2026 Dünya Kupası Programı v14",
+        browserTitle:"2026 Dünya Kupası Programı v15",
         pwaAppName:"Dünya Kupası 2026",
         langZhLabel:"Çince",
         langEnLabel:"İngilizce",
@@ -3490,6 +3490,102 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
     }
 
 
+    function setupLivePanelHorizontalScroll(){
+      if(window.__livePanelHorizontalScrollReady) return;
+      window.__livePanelHorizontalScrollReady = true;
+
+      let scroller = null;
+      let startX = 0;
+      let startY = 0;
+      let startLeft = 0;
+      let moved = false;
+
+      function reset(){
+        if(scroller) scroller.classList.remove('is-touch-dragging');
+        scroller = null;
+        moved = false;
+      }
+
+      document.addEventListener('touchstart', function(e){
+        const target = e.target;
+        const el = target && target.closest ? target.closest('.live-panel-list') : null;
+        if(!el || !e.touches || !e.touches[0]) return;
+        scroller = el;
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+        startLeft = el.scrollLeft;
+        moved = false;
+      }, {passive:true});
+
+      document.addEventListener('touchmove', function(e){
+        if(!scroller || !e.touches || !e.touches[0]) return;
+        const t0 = e.touches[0];
+        const dx = t0.clientX - startX;
+        const dy = t0.clientY - startY;
+        if(Math.abs(dx) > 6 && Math.abs(dx) > Math.abs(dy) * 1.08){
+          moved = true;
+          scroller.classList.add('is-touch-dragging');
+          scroller.scrollLeft = startLeft - dx;
+          window.__livePanelSwipeSuppressUntil = Date.now() + 240;
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      }, {passive:false});
+
+      document.addEventListener('touchend', function(){
+        if(moved) window.__livePanelSwipeSuppressUntil = Date.now() + 260;
+        reset();
+      }, {passive:true});
+      document.addEventListener('touchcancel', reset, {passive:true});
+
+      let mouseScroller = null;
+      let mouseDown = false;
+      let mouseStartX = 0;
+      let mouseStartLeft = 0;
+      let mouseMoved = false;
+
+      document.addEventListener('mousedown', function(e){
+        const target = e.target;
+        const el = target && target.closest ? target.closest('.live-panel-list') : null;
+        if(!el) return;
+        mouseScroller = el;
+        mouseDown = true;
+        mouseMoved = false;
+        mouseStartX = e.pageX;
+        mouseStartLeft = el.scrollLeft;
+        el.classList.add('is-mouse-dragging');
+      });
+
+      window.addEventListener('mousemove', function(e){
+        if(!mouseDown || !mouseScroller) return;
+        const dx = e.pageX - mouseStartX;
+        if(Math.abs(dx) > 5){
+          mouseMoved = true;
+          mouseScroller.scrollLeft = mouseStartLeft - dx;
+          window.__livePanelSwipeSuppressUntil = Date.now() + 180;
+        }
+      });
+
+      window.addEventListener('mouseup', function(){
+        if(mouseScroller) mouseScroller.classList.remove('is-mouse-dragging');
+        if(mouseMoved) window.__livePanelSwipeSuppressUntil = Date.now() + 220;
+        mouseScroller = null;
+        mouseDown = false;
+        mouseMoved = false;
+      });
+
+      document.addEventListener('wheel', function(e){
+        const target = e.target;
+        const el = target && target.closest ? target.closest('.live-panel-list') : null;
+        if(!el) return;
+        if(Math.abs(e.deltaY) > Math.abs(e.deltaX)){
+          el.scrollLeft += e.deltaY;
+          e.preventDefault();
+        }
+      }, {passive:false});
+    }
+
+
     function setupFixedOuterScrollGuard(){
       if(window.__fixedOuterScrollGuardReady) return;
       window.__fixedOuterScrollGuardReady = true;
@@ -3667,6 +3763,11 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
         setMobileFilterOpen(false);
       });
       $(document).on('click', '.live-match-card', function(e){
+        if(window.__livePanelSwipeSuppressUntil && Date.now() < window.__livePanelSwipeSuppressUntil){
+          e.preventDefault();
+          e.stopPropagation();
+          return;
+        }
         e.preventDefault();
         const idx = $(this).data('match-idx');
         if(idx !== undefined && idx !== null && idx !== '') openPredictionPage(idx);
@@ -3744,6 +3845,7 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
 
       setupPwa();
       setupFixedOuterScrollGuard();
+      setupLivePanelHorizontalScroll();
       bind();
       loadScoreCache();
       applyLang();
