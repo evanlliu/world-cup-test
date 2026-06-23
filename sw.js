@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wc2026-pwa-v17-live-card-name-full';
+const CACHE_NAME = 'wc2026-pwa-v18-viewer-close-fix';
 const APP_SHELL = [
   './',
   './index.html',
