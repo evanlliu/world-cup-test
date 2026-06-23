@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wc2026-pwa-v16-live-scroll-smooth-click';
+const CACHE_NAME = 'wc2026-pwa-v17-live-card-name-full';
 const APP_SHELL = [
   './',
   './index.html',
