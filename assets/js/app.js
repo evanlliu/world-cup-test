@@ -12,7 +12,7 @@
     const TZ_MAIN = "America/Monterrey";
     const TZ_CHINA = "Asia/Shanghai";
     const CACHE_KEY = "wc2026_schedule_mobile_ui_v1";
-    const PREDICTION_CACHE_KEY = 'wc2026_prediction_cache_v19';
+    const PREDICTION_CACHE_KEY = 'wc2026_prediction_cache_v21';
     const SCORE_CACHE_KEY = "wc2026_score_cache_v9";
     const SCORE_REFRESH_MS = 30000;
 
@@ -106,13 +106,13 @@
     }
 
 
-    const APP_VERSION = "v19";
+    const APP_VERSION = "v21";
 
     const I18N = {
       zh: {
         htmlLang:"zh-CN",
         title:"2026 世界杯",
-        browserTitle:"2026 世界杯赛程 v19",
+        browserTitle:"2026 世界杯赛程 v21",
         pwaAppName:"世界杯2026",
         langZhLabel:"中文",
         langEnLabel:"英文",
@@ -178,7 +178,7 @@
       en: {
         htmlLang:"en",
         title:"World Cup 2026",
-        browserTitle:"World Cup 2026 Schedule v19",
+        browserTitle:"World Cup 2026 Schedule v21",
         pwaAppName:"World Cup 2026",
         langZhLabel:"Chinese",
         langEnLabel:"English",
@@ -244,7 +244,7 @@
       tr: {
         htmlLang:"tr",
         title:"2026 Dünya Kupası",
-        browserTitle:"2026 Dünya Kupası Programı v19",
+        browserTitle:"2026 Dünya Kupası Programı v21",
         pwaAppName:"Dünya Kupası 2026",
         langZhLabel:"Çince",
         langEnLabel:"İngilizce",
@@ -511,7 +511,7 @@
     };
 
 
-    const IMPORTED_SCORE_PREDICTIONS = {"2026-06-11|A|mexico|south africa":{"normal":["2-0","1-0"],"upset":["1-1","0-0","1-2"]},"2026-06-11|A|south korea|czech republic":{"normal":["2-1","1-1"],"upset":["0-1","1-2","2-2"]},"2026-06-12|B|canada|bosnia & herzegovina":{"normal":["1-1","1-0"],"upset":["0-1","2-2","1-2"]},"2026-06-12|D|usa|paraguay":{"normal":["3-0","2-0"],"upset":["2-1","1-1","1-2"]},"2026-06-13|B|qatar|switzerland":{"normal":["0-2","1-2"],"upset":["1-1","1-0","2-2"]},"2026-06-13|C|brazil|morocco":{"normal":["2-1","1-0"],"upset":["1-1","0-1","2-2"]},"2026-06-13|C|haiti|scotland":{"normal":["0-2","1-2"],"upset":["1-1","1-0","2-2"]},"2026-06-14|D|australia|turkey":{"normal":["1-2","1-1"],"upset":["2-1","0-0","2-2"]},"2026-06-14|E|germany|curaçao":{"normal":["4-0","3-0"],"upset":["2-1","1-1","0-0"]},"2026-06-14|F|netherlands|japan":{"normal":["2-1","1-1"],"upset":["1-2","0-1","2-2"]},"2026-06-14|E|ivory coast|ecuador":{"normal":["1-1","1-2"],"upset":["2-1","0-0","2-2"]},"2026-06-14|F|sweden|tunisia":{"normal":["1-0","2-0"],"upset":["1-1","0-1","2-2"]},"2026-06-15|H|spain|cape verde":{"normal":["3-0","4-0"],"upset":["2-1","1-1","0-0"]},"2026-06-15|G|belgium|egypt":{"normal":["2-1","2-0"],"upset":["1-1","1-2","0-0"]},"2026-06-15|H|saudi arabia|uruguay":{"normal":["0-2","1-2"],"upset":["1-1","2-1","0-0"]},"2026-06-15|G|iran|new zealand":{"normal":["1-0","2-0"],"upset":["1-1","0-1","2-2"]},"2026-06-16|I|france|senegal":{"normal":["2-1","1-0"],"upset":["1-1","0-1","2-2"]},"2026-06-16|I|iraq|norway":{"normal":["0-2","1-2"],"upset":["1-1","2-1","0-0"]},"2026-06-16|J|argentina|algeria":{"normal":["2-0","2-1"],"upset":["1-1","0-1","2-2"]},"2026-06-17|J|austria|jordan":{"normal":["2-0","2-1"],"upset":["1-1","0-1","2-2"]},"2026-06-17|K|portugal|dr congo":{"normal":["2-0","3-1"],"upset":["1-1","0-1","2-2"]},"2026-06-17|L|england|croatia":{"normal":["2-1","1-1"],"upset":["1-2","0-1","2-2"]},"2026-06-17|L|ghana|panama":{"normal":["2-0","2-1"],"upset":["1-1","0-1","2-2"]},"2026-06-17|K|uzbekistan|colombia":{"normal":["0-2","1-2"],"upset":["1-1","2-1","0-0"]},"2026-06-18|A|czech republic|south africa":{"normal":["2-1","1-0"],"upset":["1-1","0-1","2-2"]},"2026-06-18|B|switzerland|bosnia & herzegovina":{"normal":["2-1","1-0"],"upset":["1-1","0-1","2-2"]},"2026-06-18|B|canada|qatar":{"normal":["2-0","2-1"],"upset":["1-1","0-1","1-2"]},"2026-06-18|A|mexico|south korea":{"normal":["2-1","1-1"],"upset":["1-2","0-1","2-2"]},"2026-06-19|D|usa|australia":{"normal":["2-1","2-0"],"upset":["1-1","1-2","0-0"]},"2026-06-19|C|scotland|morocco":{"normal":["1-1","1-2"],"upset":["2-1","0-0","2-2"]},"2026-06-19|C|brazil|haiti":{"normal":["3-0","2-0"],"upset":["2-1","1-1","0-1"]},"2026-06-19|D|turkey|paraguay":{"normal":["2-1","1-1"],"upset":["0-1","1-2","0-0"]},"2026-06-20|F|netherlands|sweden":{"normal":["2-1","1-1"],"upset":["0-1","1-2","0-0"]},"2026-06-20|E|germany|ivory coast":{"normal":["2-0","2-1"],"upset":["1-1","1-2","0-0"]},"2026-06-20|E|ecuador|curaçao":{"normal":["2-0","3-1"],"upset":["1-1","0-1","2-2"]},"2026-06-21|F|tunisia|japan":{"normal":["0-1","0-2"],"upset":["1-1","1-0","2-2"]},"2026-06-21|H|spain|saudi arabia":{"normal":["3-0","2-0"],"upset":["2-1","1-1","0-0"]},"2026-06-21|G|belgium|iran":{"normal":["2-0","2-1"],"upset":["1-1","0-1","0-0"]},"2026-06-21|H|uruguay|cape verde":{"normal":["2-0","3-1"],"upset":["1-1","0-1","2-2"]},"2026-06-21|G|new zealand|egypt":{"normal":["0-2","1-2"],"upset":["1-1","1-0","2-2"]},"2026-06-22|J|argentina|austria":{"normal":["2-1","1-0"],"upset":["1-1","0-1","2-2"]},"2026-06-22|I|france|iraq":{"normal":["3-0","2-0"],"upset":["2-1","1-1","0-0"]},"2026-06-22|I|norway|senegal":{"normal":["1-1","2-1"],"upset":["0-1","1-2","2-2"]},"2026-06-22|J|jordan|algeria":{"normal":["0-1","1-2"],"upset":["1-1","1-0","2-2"]},"2026-06-23|K|portugal|uzbekistan":{"normal":["2-0","3-0"],"upset":["1-1","0-1","2-2"]},"2026-06-23|L|england|ghana":{"normal":["2-0","2-1"],"upset":["1-1","0-1","2-2"]},"2026-06-23|L|panama|croatia":{"normal":["0-2","1-2"],"upset":["1-1","1-0","2-2"]},"2026-06-23|K|colombia|dr congo":{"normal":["2-0","2-1"],"upset":["1-1","0-1","2-2"]},"2026-06-24|B|switzerland|canada":{"normal":["1-1","2-1"],"upset":["0-1","1-2","0-0"]},"2026-06-24|B|bosnia & herzegovina|qatar":{"normal":["2-0","2-1"],"upset":["1-1","0-1","2-2"]},"2026-06-24|C|scotland|brazil":{"normal":["0-2","1-2"],"upset":["1-1","2-1","0-0"]},"2026-06-24|C|morocco|haiti":{"normal":["2-0","2-1"],"upset":["1-1","0-1","2-2"]},"2026-06-24|A|czech republic|mexico":{"normal":["1-2","1-1"],"upset":["2-1","0-0","2-2"]},"2026-06-24|A|south africa|south korea":{"normal":["0-2","1-2"],"upset":["1-1","2-1","0-0"]},"2026-06-25|E|ecuador|germany":{"normal":["1-2","0-2"],"upset":["1-1","2-1","0-0"]},"2026-06-25|E|curaçao|ivory coast":{"normal":["0-2","1-2"],"upset":["1-1","1-0","2-2"]},"2026-06-25|F|tunisia|netherlands":{"normal":["0-2","1-2"],"upset":["1-1","2-1","0-0"]},"2026-06-25|F|japan|sweden":{"normal":["1-1","2-1"],"upset":["0-1","1-2","0-0"]},"2026-06-25|D|turkey|usa":{"normal":["1-2","1-1"],"upset":["2-1","0-0","2-2"]},"2026-06-25|D|paraguay|australia":{"normal":["1-1","2-1"],"upset":["0-1","1-2","0-0"]},"2026-06-26|I|norway|france":{"normal":["1-2","0-2"],"upset":["1-1","2-1","0-0"]},"2026-06-26|I|senegal|iraq":{"normal":["2-0","2-1"],"upset":["1-1","0-1","2-2"]},"2026-06-26|H|uruguay|spain":{"normal":["1-1","1-2"],"upset":["2-1","0-0","2-2"]},"2026-06-26|H|cape verde|saudi arabia":{"normal":["1-1","1-2"],"upset":["2-1","0-0","2-2"]},"2026-06-26|G|new zealand|belgium":{"normal":["0-3","1-3"],"upset":["1-1","1-0","2-2"]},"2026-06-26|G|egypt|iran":{"normal":["1-1","2-1"],"upset":["0-1","1-2","0-0"]},"2026-06-27|L|panama|england":{"normal":["0-3","1-3"],"upset":["1-1","1-0","2-2"]},"2026-06-27|L|croatia|ghana":{"normal":["2-1","1-1"],"upset":["0-1","1-2","0-0"]},"2026-06-27|K|colombia|portugal":{"normal":["1-1","1-2"],"upset":["2-1","0-0","2-2"]},"2026-06-27|K|dr congo|uzbekistan":{"normal":["1-1","1-2"],"upset":["2-1","0-0","2-2"]},"2026-06-27|J|jordan|argentina":{"normal":["0-3","1-3"],"upset":["1-1","1-0","2-2"]},"2026-06-27|J|algeria|austria":{"normal":["1-1","1-2"],"upset":["2-1","0-0","2-2"]}};
+    const IMPORTED_SCORE_PREDICTIONS = {"2026-06-11|A|mexico|south africa":{"normal":["2-0","1-0"],"upset":["1-1","0-0","1-2"]},"2026-06-11|A|south korea|czech republic":{"normal":["2-1","1-1"],"upset":["0-1","1-2","2-2"]},"2026-06-12|B|canada|bosnia & herzegovina":{"normal":["1-1","1-0"],"upset":["0-1","2-2","1-2"]},"2026-06-12|D|usa|paraguay":{"normal":["3-0","2-0"],"upset":["2-1","1-1","1-2"]},"2026-06-13|B|qatar|switzerland":{"normal":["0-2","1-2"],"upset":["1-1","1-0","2-2"]},"2026-06-13|C|brazil|morocco":{"normal":["2-1","1-0"],"upset":["1-1","0-1","2-2"]},"2026-06-13|C|haiti|scotland":{"normal":["0-2","1-2"],"upset":["1-1","1-0","2-2"]},"2026-06-14|D|australia|turkey":{"normal":["1-2","1-1"],"upset":["2-1","0-0","2-2"]},"2026-06-14|E|germany|curaçao":{"normal":["4-0","3-0"],"upset":["2-1","1-1","0-0"]},"2026-06-14|F|netherlands|japan":{"normal":["2-1","1-1"],"upset":["1-2","0-1","2-2"]},"2026-06-14|E|ivory coast|ecuador":{"normal":["1-1","1-2"],"upset":["2-1","0-0","2-2"]},"2026-06-14|F|sweden|tunisia":{"normal":["1-0","2-0"],"upset":["1-1","0-1","2-2"]},"2026-06-15|H|spain|cape verde":{"normal":["3-0","4-0"],"upset":["2-1","1-1","0-0"]},"2026-06-15|G|belgium|egypt":{"normal":["2-1","2-0"],"upset":["1-1","1-2","0-0"]},"2026-06-15|H|saudi arabia|uruguay":{"normal":["0-2","1-2"],"upset":["1-1","2-1","0-0"]},"2026-06-15|G|iran|new zealand":{"normal":["1-0","2-0"],"upset":["1-1","0-1","2-2"]},"2026-06-16|I|france|senegal":{"normal":["2-1","1-0"],"upset":["1-1","0-1","2-2"]},"2026-06-16|I|iraq|norway":{"normal":["0-2","1-2"],"upset":["1-1","2-1","0-0"]},"2026-06-16|J|argentina|algeria":{"normal":["2-0","2-1"],"upset":["1-1","0-1","2-2"]},"2026-06-17|J|austria|jordan":{"normal":["2-0","2-1"],"upset":["1-1","0-1","2-2"]},"2026-06-17|K|portugal|dr congo":{"normal":["2-0","3-1"],"upset":["1-1","0-1","2-2"]},"2026-06-17|L|england|croatia":{"normal":["2-1","1-1"],"upset":["1-2","0-1","2-2"]},"2026-06-17|L|ghana|panama":{"normal":["2-0","2-1"],"upset":["1-1","0-1","2-2"]},"2026-06-17|K|uzbekistan|colombia":{"normal":["0-2","1-2"],"upset":["1-1","2-1","0-0"]},"2026-06-18|A|czech republic|south africa":{"normal":["2-1","1-0"],"upset":["1-1","0-1","2-2"]},"2026-06-18|B|switzerland|bosnia & herzegovina":{"normal":["2-1","1-0"],"upset":["1-1","0-1","2-2"]},"2026-06-18|B|canada|qatar":{"normal":["2-0","2-1"],"upset":["1-1","0-1","1-2"]},"2026-06-18|A|mexico|south korea":{"normal":["2-1","1-1"],"upset":["1-2","0-1","2-2"]},"2026-06-19|D|usa|australia":{"normal":["2-1","2-0"],"upset":["1-1","1-2","0-0"]},"2026-06-19|C|scotland|morocco":{"normal":["1-1","1-2"],"upset":["2-1","0-0","2-2"]},"2026-06-19|C|brazil|haiti":{"normal":["3-0","2-0"],"upset":["2-1","1-1","0-1"]},"2026-06-19|D|turkey|paraguay":{"normal":["2-1","1-1"],"upset":["0-1","1-2","0-0"]},"2026-06-20|F|netherlands|sweden":{"normal":["2-1","1-1"],"upset":["0-1","1-2","0-0"]},"2026-06-20|E|germany|ivory coast":{"normal":["2-0","2-1"],"upset":["1-1","1-2","0-0"]},"2026-06-20|E|ecuador|curaçao":{"normal":["2-0","3-1"],"upset":["1-1","0-1","2-2"]},"2026-06-21|F|tunisia|japan":{"normal":["0-1","0-2"],"upset":["1-1","1-0","2-2"]},"2026-06-21|H|spain|saudi arabia":{"normal":["3-0","2-0"],"upset":["2-1","1-1","0-0"]},"2026-06-21|G|belgium|iran":{"normal":["2-0","2-1"],"upset":["1-1","0-1","0-0"]},"2026-06-21|H|uruguay|cape verde":{"normal":["2-0","3-1"],"upset":["1-1","0-1","2-2"]},"2026-06-21|G|new zealand|egypt":{"normal":["0-2","1-2"],"upset":["1-1","1-0","2-2"]},"2026-06-22|J|argentina|austria":{"normal":["2-1","1-0"],"upset":["1-1","0-1","2-2"]},"2026-06-22|I|france|iraq":{"normal":["3-0","2-0"],"upset":["2-1","1-1","0-0"]},"2026-06-22|I|norway|senegal":{"normal":["1-1","2-1"],"upset":["0-1","1-2","2-2"]},"2026-06-22|J|jordan|algeria":{"normal":["0-1","1-2"],"upset":["1-1","1-0","2-2"]},"2026-06-23|K|portugal|uzbekistan":{"normal":["2-0","3-0"],"upset":["1-1","0-1","2-2"]},"2026-06-23|L|england|ghana":{"normal":["2-0","2-1"],"upset":["1-1","0-1","2-2"]},"2026-06-23|L|panama|croatia":{"normal":["0-2","1-2"],"upset":["1-1","1-0","2-2"]},"2026-06-23|K|colombia|dr congo":{"normal":["2-1","1-1"],"upset":["0-1","2-2","1-2"]},"2026-06-24|B|switzerland|canada":{"normal":["1-2","2-2"],"upset":["2-1","0-0","1-1"]},"2026-06-24|B|bosnia & herzegovina|qatar":{"normal":["2-0","2-1"],"upset":["1-1","0-1","2-2"]},"2026-06-24|C|scotland|brazil":{"normal":["0-2","1-2"],"upset":["1-1","2-1","0-0"]},"2026-06-24|C|morocco|haiti":{"normal":["2-0","3-0"],"upset":["1-1","0-1","2-2"]},"2026-06-24|A|czech republic|mexico":{"normal":["1-1","0-1"],"upset":["2-1","0-0","2-2"]},"2026-06-24|A|south africa|south korea":{"normal":["0-2","1-2"],"upset":["1-1","2-1","0-0"]},"2026-06-25|E|ecuador|germany":{"normal":["1-3","0-2"],"upset":["1-1","2-1","0-0"]},"2026-06-25|E|curaçao|ivory coast":{"normal":["0-2","1-2"],"upset":["1-1","1-0","2-2"]},"2026-06-25|F|tunisia|netherlands":{"normal":["0-3","0-2"],"upset":["1-1","1-0","2-2"]},"2026-06-25|F|japan|sweden":{"normal":["2-1","1-1"],"upset":["1-2","0-1","2-2"]},"2026-06-25|D|turkey|usa":{"normal":["0-2","1-2"],"upset":["1-1","2-1","0-0"]},"2026-06-25|D|paraguay|australia":{"normal":["1-1","1-2"],"upset":["2-1","0-1","0-0"]},"2026-06-26|I|norway|france":{"normal":["1-2","2-2"],"upset":["2-1","1-1","0-0"]},"2026-06-26|I|senegal|iraq":{"normal":["2-0","2-1"],"upset":["1-1","0-1","2-2"]},"2026-06-26|H|uruguay|spain":{"normal":["1-2","1-1"],"upset":["2-1","0-0","2-2"]},"2026-06-26|H|cape verde|saudi arabia":{"normal":["1-1","1-0"],"upset":["0-1","1-2","2-2"]},"2026-06-26|G|new zealand|belgium":{"normal":["0-2","1-2"],"upset":["1-1","1-0","2-2"]},"2026-06-26|G|egypt|iran":{"normal":["2-1","1-1"],"upset":["0-1","1-2","0-0"]},"2026-06-27|L|panama|england":{"normal":["0-2","0-3"],"upset":["1-1","1-0","2-2"]},"2026-06-27|L|croatia|ghana":{"normal":["1-1","2-1"],"upset":["0-1","1-2","0-0"]},"2026-06-27|K|colombia|portugal":{"normal":["1-2","1-1"],"upset":["2-1","0-0","2-2"]},"2026-06-27|K|dr congo|uzbekistan":{"normal":["2-1","1-1"],"upset":["0-1","1-2","2-2"]},"2026-06-27|J|jordan|argentina":{"normal":["0-3","0-2"],"upset":["1-1","1-0","2-2"]},"2026-06-27|J|algeria|austria":{"normal":["1-2","1-1"],"upset":["2-1","0-0","2-2"]}};
 
     function deviceLang(){
       const lang = (navigator.language || "").toLowerCase();
@@ -3574,59 +3574,48 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
       if(window.__livePanelHorizontalScrollReady) return;
       window.__livePanelHorizontalScrollReady = true;
 
-      // 移动端不要用 JS 强制设置 scrollLeft。
-      // iOS Safari 原生 overflow-x + -webkit-overflow-scrolling 才最丝滑；
-      // 这里只负责识别“真实横向拖动”，用于避免拖动后误触打开详情。
-      let touchScroller = null;
+      // 移动端：完全交给浏览器原生 overflow-x 处理，iOS Safari 才会有真正的惯性滑动。
+      // JS 只记录手指移动距离，用于区分“点击进入详情”和“横向滑动”。
       let touchStartX = 0;
       let touchStartY = 0;
       let touchMaxDx = 0;
       let touchMaxDy = 0;
-      let touchMovedHorizontally = false;
-
-      function resetTouchScroller(){
-        if(touchScroller) touchScroller.classList.remove('is-touch-dragging');
-        touchScroller = null;
-        touchMaxDx = 0;
-        touchMaxDy = 0;
-        touchMovedHorizontally = false;
-      }
+      let touchingLiveList = false;
 
       document.addEventListener('touchstart', function(e){
         const target = e.target;
         const el = target && target.closest ? target.closest('.live-panel-list') : null;
         if(!el || !e.touches || !e.touches[0]) return;
-        touchScroller = el;
-        touchStartX = e.touches[0].clientX;
-        touchStartY = e.touches[0].clientY;
+        touchingLiveList = true;
+        const t0 = e.touches[0];
+        touchStartX = t0.clientX;
+        touchStartY = t0.clientY;
         touchMaxDx = 0;
         touchMaxDy = 0;
-        touchMovedHorizontally = false;
       }, {passive:true});
 
       document.addEventListener('touchmove', function(e){
-        if(!touchScroller || !e.touches || !e.touches[0]) return;
+        if(!touchingLiveList || !e.touches || !e.touches[0]) return;
         const t0 = e.touches[0];
         const dx = Math.abs(t0.clientX - touchStartX);
         const dy = Math.abs(t0.clientY - touchStartY);
         touchMaxDx = Math.max(touchMaxDx, dx);
         touchMaxDy = Math.max(touchMaxDy, dy);
-        if(dx > 14 && dx > dy * 1.25){
-          touchMovedHorizontally = true;
-          touchScroller.classList.add('is-touch-dragging');
-        }
-        // 不 preventDefault，不手动改 scrollLeft，让浏览器原生惯性滚动接管。
+        // 不 preventDefault，不手动改 scrollLeft，不频繁加/删 class，避免 iOS 卡顿。
       }, {passive:true});
 
-      document.addEventListener('touchend', function(){
-        if(touchMovedHorizontally && touchMaxDx > 18){
-          window.__livePanelSwipeSuppressUntil = Date.now() + 220;
+      function finishLiveTouch(){
+        if(touchingLiveList && touchMaxDx > 16 && touchMaxDx > touchMaxDy * 1.15){
+          window.__livePanelSwipeSuppressUntil = Date.now() + 180;
         }
-        resetTouchScroller();
-      }, {passive:true});
-      document.addEventListener('touchcancel', resetTouchScroller, {passive:true});
+        touchingLiveList = false;
+        touchMaxDx = 0;
+        touchMaxDy = 0;
+      }
+      document.addEventListener('touchend', finishLiveTouch, {passive:true});
+      document.addEventListener('touchcancel', finishLiveTouch, {passive:true});
 
-      // PC 端保留鼠标拖动横向滚动。
+      // PC 端：鼠标拖动横向滚动；移动端不会走这里。
       let mouseScroller = null;
       let mouseDown = false;
       let mouseStartX = 0;
@@ -3651,14 +3640,14 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
         if(Math.abs(dx) > 6){
           mouseMoved = true;
           mouseScroller.scrollLeft = mouseStartLeft - dx;
-          window.__livePanelSwipeSuppressUntil = Date.now() + 180;
+          window.__livePanelSwipeSuppressUntil = Date.now() + 150;
           e.preventDefault();
         }
       });
 
       window.addEventListener('mouseup', function(){
         if(mouseScroller) mouseScroller.classList.remove('is-mouse-dragging');
-        if(mouseMoved) window.__livePanelSwipeSuppressUntil = Date.now() + 220;
+        if(mouseMoved) window.__livePanelSwipeSuppressUntil = Date.now() + 180;
         mouseScroller = null;
         mouseDown = false;
         mouseMoved = false;
@@ -3674,7 +3663,6 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
         }
       }, {passive:false});
     }
-
 
     function setupFixedOuterScrollGuard(){
       if(window.__fixedOuterScrollGuardReady) return;
@@ -3712,6 +3700,13 @@ const upsetSide = favSide === 'home' ? 'away' : 'home';
         if($('#predictionPage').length && !$('#predictionPage').hasClass('hidden')){
           if(target.closest && target.closest('.prediction-scroll')) return;
           e.preventDefault();
+          return;
+        }
+
+        // 正在比赛横向卡片必须允许浏览器原生处理。
+        // 之前这里没有放行 live-panel-list，iOS 上 touchmove 被 preventDefault，
+        // 所以看起来能动一点但没有原生惯性，滑动会卡。
+        if(target.closest && target.closest('.live-panel-list')){
           return;
         }
 
