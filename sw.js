@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wc2026-pwa-v18-viewer-close-fix';
+const CACHE_NAME = 'wc2026-pwa-v19-viewer-close-fix';
 const APP_SHELL = [
   './',
   './index.html',
