@@ -12,7 +12,7 @@
     const TZ_MAIN = "America/Monterrey";
     const TZ_CHINA = "Asia/Shanghai";
     const CACHE_KEY = "wc2026_schedule_mobile_ui_v1";
-    const PREDICTION_CACHE_KEY = 'wc2026_prediction_cache_v18';
+    const PREDICTION_CACHE_KEY = 'wc2026_prediction_cache_v19';
     const SCORE_CACHE_KEY = "wc2026_score_cache_v9";
     const SCORE_REFRESH_MS = 30000;
 
@@ -106,13 +106,13 @@
     }
 
 
-    const APP_VERSION = "v18";
+    const APP_VERSION = "v19";
 
     const I18N = {
       zh: {
         htmlLang:"zh-CN",
         title:"2026 世界杯",
-        browserTitle:"2026 世界杯赛程 v18",
+        browserTitle:"2026 世界杯赛程 v19",
         pwaAppName:"世界杯2026",
         langZhLabel:"中文",
         langEnLabel:"英文",
@@ -178,7 +178,7 @@
       en: {
         htmlLang:"en",
         title:"World Cup 2026",
-        browserTitle:"World Cup 2026 Schedule v18",
+        browserTitle:"World Cup 2026 Schedule v19",
         pwaAppName:"World Cup 2026",
         langZhLabel:"Chinese",
         langEnLabel:"English",
@@ -244,7 +244,7 @@
       tr: {
         htmlLang:"tr",
         title:"2026 Dünya Kupası",
-        browserTitle:"2026 Dünya Kupası Programı v18",
+        browserTitle:"2026 Dünya Kupası Programı v19",
         pwaAppName:"Dünya Kupası 2026",
         langZhLabel:"Çince",
         langEnLabel:"İngilizce",
@@ -775,6 +775,11 @@
         completed: !!s.completed,
         detail: String(s.detail || ''),
         clock: String(s.clock || ''),
+        statusName: String(s.statusName || ''),
+        statusDescription: String(s.statusDescription || ''),
+        statusDetail: String(s.statusDetail || ''),
+        statusShortDetail: String(s.statusShortDetail || ''),
+        displayClock: String(s.displayClock || ''),
         eventId: String(s.eventId || '')
       });
     }
@@ -961,8 +966,13 @@
         awayScore: away.score ?? '',
         state: status.state || '',
         completed: !!status.completed,
-        detail: status.shortDetail || status.detail || status.description || statusRoot.displayClock || '',
-        clock: statusRoot.displayClock || status.shortDetail || '',
+        detail: status.shortDetail || status.detail || statusRoot.displayClock || status.description || '',
+        clock: statusRoot.displayClock || status.shortDetail || status.detail || '',
+        statusName: status.name || status.id || '',
+        statusDescription: status.description || '',
+        statusDetail: status.detail || '',
+        statusShortDetail: status.shortDetail || '',
+        displayClock: statusRoot.displayClock || '',
         eventDate: isNaN(eventDate.getTime()) ? '' : eventDate.toISOString(),
         updatedAt: new Date().toISOString(),
         eventId: header.id || (comp && comp.id) || ''
@@ -1004,8 +1014,13 @@
         awayScore: away.score ?? away.curatedScore ?? '',
         state: status.state || statusRoot.state || '',
         completed: !!status.completed || !!statusRoot.completed,
-        detail: status.shortDetail || status.detail || status.description || statusRoot.shortDetail || statusRoot.detail || statusRoot.displayClock || '',
-        clock: statusRoot.displayClock || status.shortDetail || '',
+        detail: status.shortDetail || status.detail || statusRoot.displayClock || statusRoot.shortDetail || statusRoot.detail || status.description || '',
+        clock: statusRoot.displayClock || status.shortDetail || status.detail || statusRoot.shortDetail || '',
+        statusName: status.name || status.id || '',
+        statusDescription: status.description || '',
+        statusDetail: status.detail || '',
+        statusShortDetail: status.shortDetail || '',
+        displayClock: statusRoot.displayClock || '',
         eventDate: isNaN(eventDate.getTime()) ? '' : eventDate.toISOString(),
         updatedAt: new Date().toISOString(),
         eventId: (comp && comp.id) || (parent && parent.id) || ''
@@ -1073,8 +1088,13 @@
           awayScore: away.score ?? '',
           state: status.state || '',
           completed: !!status.completed,
-          detail: status.shortDetail || status.detail || status.description || '',
-          clock: statusRoot.displayClock || status.shortDetail || '',
+          detail: status.shortDetail || status.detail || statusRoot.displayClock || status.description || '',
+          clock: statusRoot.displayClock || status.shortDetail || status.detail || '',
+          statusName: status.name || status.id || '',
+          statusDescription: status.description || '',
+          statusDetail: status.detail || '',
+          statusShortDetail: status.shortDetail || '',
+          displayClock: statusRoot.displayClock || '',
           eventDate: isNaN(eventDate.getTime()) ? '' : eventDate.toISOString(),
           updatedAt: new Date().toISOString(),
           eventId: ev.id || ''
@@ -1231,33 +1251,92 @@
     }
     function scoreStatusOf(matchDate, score){
       if(score){
-        if(score.state === 'in') return 'live';
         if(score.completed || score.state === 'post') return 'finished';
         if(score.state === 'pre') return 'upcoming';
+        // ESPN 会把中场、暂停、延迟等都放在 in 状态下；仍然算直播，但显示文案要用具体 detail。
+        if(score.state === 'in') return 'live';
       }
       return statusOf(matchDate);
     }
+    function scoreRawStatusText(score){
+      if(!score) return '';
+      return [
+        score.statusShortDetail,
+        score.statusDetail,
+        score.displayClock,
+        score.clock,
+        score.detail,
+        score.statusDescription,
+        score.statusName
+      ].filter(x => x !== undefined && x !== null && String(x).trim()).map(x => String(x).trim()).join(' ');
+    }
+    function isGenericLiveStatusText(text){
+      const lower = String(text || '').trim().toLowerCase();
+      return !lower || lower === 'live' || lower === 'in progress' || lower === 'status_in_progress' || lower === 'playing' || lower === 'ongoing' || lower === '进行中';
+    }
+    function isUsefulClockText(text){
+      const s = String(text || '').trim();
+      if(!s) return false;
+      const lower = s.toLowerCase();
+      if(isGenericLiveStatusText(s)) return false;
+      if(/^(ht|half|halftime|half time|half-time|int|intermission)$/i.test(s)) return true;
+      if(/^\d{1,3}(\+\d+)?['′]?$/.test(s)) return true;
+      if(/^\d{1,3}:\d{2}$/.test(s)) return true;
+      return false;
+    }
+    function localizedSpecialStatus(raw, fallbackStatus){
+      const lower = String(raw || '').toLowerCase();
+      const lang = app.lang || 'zh';
+      if(!lower) return '';
+      const isZh = lang === 'zh';
+      const isTr = lang === 'tr';
+
+      if(lower === 'final' || lower.includes('full time') || lower.includes('full-time') || lower.includes('status_final')) return t('finished');
+      if(/\b(ht|half time|half-time|halftime|intermission|int)\b/.test(lower) || lower.includes('中场')){
+        return isZh ? '中场休息' : (isTr ? 'Devre arası' : 'Halftime');
+      }
+      if(lower.includes('weather delay') || lower.includes('weather suspended')){
+        return isZh ? '天气暂停' : (isTr ? 'Hava nedeniyle durdu' : 'Weather delay');
+      }
+      if(lower.includes('delayed') || lower.includes('delay') || lower.includes('suspended') || lower.includes('paused') || lower.includes('pause') || lower.includes('暂停')){
+        return isZh ? '比赛暂停' : (isTr ? 'Maç durdu' : 'Paused');
+      }
+      if(lower.includes('abandoned')){
+        return isZh ? '比赛中止' : (isTr ? 'Maç yarıda kaldı' : 'Abandoned');
+      }
+      if(lower.includes('postponed')){
+        return isZh ? '延期' : (isTr ? 'Ertelendi' : 'Postponed');
+      }
+      if(lower.includes('cancelled') || lower.includes('canceled')){
+        return isZh ? '取消' : (isTr ? 'İptal' : 'Cancelled');
+      }
+      if(lower.includes('scheduled') || lower.includes('pre-game') || lower.includes('pre game') || lower.includes('status_scheduled')){
+        return t('upcoming');
+      }
+      return '';
+    }
     function scoreDetailText(score, fallbackStatus){
-      if(score && score.detail){
-        const detail = String(score.detail || '').trim();
-        if(app.lang === 'en') return detail;
-        const lower = detail.toLowerCase();
-        if(app.lang === 'zh'){
-          if(lower === 'final' || lower.includes('full')) return t('finished');
-          if(lower.includes('half')) return '中场';
-          if(lower.includes('scheduled') || lower.includes('pre')) return t('upcoming');
-          if(lower.includes('postponed')) return '延期';
-          if(lower.includes('cancelled') || lower.includes('canceled')) return '取消';
+      if(score){
+        const raw = scoreRawStatusText(score);
+        const special = localizedSpecialStatus(raw, fallbackStatus);
+        if(special) return special;
+
+        const clock = String(score.clock || score.displayClock || score.statusShortDetail || '').trim();
+        if(isUsefulClockText(clock)){
+          const clockSpecial = localizedSpecialStatus(clock, fallbackStatus);
+          return clockSpecial || clock;
         }
-        if(app.lang === 'tr'){
-          if(lower === 'final' || lower.includes('full')) return t('finished');
-          if(lower.includes('half')) return 'Devre arası';
-          if(lower.includes('scheduled') || lower.includes('pre')) return t('upcoming');
-          if(lower.includes('postponed')) return 'Ertelendi';
-          if(lower.includes('cancelled') || lower.includes('canceled')) return 'İptal';
+
+        const detail = String(score.detail || score.statusDetail || score.statusDescription || '').trim();
+        if(detail && !isGenericLiveStatusText(detail)){
+          const detailSpecial = localizedSpecialStatus(detail, fallbackStatus);
+          if(detailSpecial) return detailSpecial;
+          // 非英文界面下，ESPN 的纯英文通用描述不要直接显示成 In Progress。
+          if(/[a-z]/i.test(detail) && app.lang !== 'en'){
+            return fallbackStatus === 'live' ? t('live') : (fallbackStatus === 'finished' ? t('finished') : t('upcoming'));
+          }
+          return detail;
         }
-        if(/[a-z]/i.test(detail)) return fallbackStatus === 'live' ? t('live') : (fallbackStatus === 'finished' ? t('finished') : t('upcoming'));
-        return detail;
       }
       if(fallbackStatus === 'live') return t('live');
       if(fallbackStatus === 'finished') return t('finished');
