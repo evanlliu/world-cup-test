@@ -12,7 +12,7 @@
     const TZ_MAIN = "America/Monterrey";
     const TZ_CHINA = "Asia/Shanghai";
     const CACHE_KEY = "wc2026_schedule_mobile_ui_v1";
-    const PREDICTION_CACHE_KEY = 'wc2026_prediction_cache_v21';
+    const PREDICTION_CACHE_KEY = 'wc2026_prediction_cache_v25';
     const SCORE_CACHE_KEY = "wc2026_score_cache_v9";
     const SCORE_REFRESH_MS = 30000;
 
@@ -106,13 +106,13 @@
     }
 
 
-    const APP_VERSION = "v21";
+    const APP_VERSION = "v25";
 
     const I18N = {
       zh: {
         htmlLang:"zh-CN",
         title:"2026 世界杯",
-        browserTitle:"2026 世界杯赛程 v21",
+        browserTitle:"2026 世界杯赛程 v25",
         pwaAppName:"世界杯2026",
         langZhLabel:"中文",
         langEnLabel:"英文",
@@ -723,9 +723,17 @@
       const visible = filteredMatches();
       const now = new Date();
 
-      // 关键修复：页面日期按蒙特雷/北京显示，但 ESPN 比分接口按美东日期归档。
-      // 比如蒙特雷 06.13 晚上的比赛，在 ESPN 可能属于 06.14。
-      if(app.activeDate === 'all'){
+      // 数据页需要全局同步积分榜/球员榜/球队榜/晋级图，不能只取当前日期筛选。
+      // 这里拉取：今天附近 + 已经开赛过的所有比赛日期，确保各小组数据实时更新。
+      if(app.activeTab !== 'schedule'){
+        addScoreFetchDateKeys(keys, now);
+        matchItems().forEach(m => {
+          const d = matchDate(m);
+          if(d.getTime() <= now.getTime() + 12 * 60 * 60 * 1000){
+            addScoreFetchDateKeys(keys, d);
+          }
+        });
+      }else if(app.activeDate === 'all'){
         addScoreFetchDateKeys(keys, now);
         matchItems().forEach(m => {
           const d = matchDate(m);
@@ -741,7 +749,7 @@
         addScoreFetchDateKeys(keys, now);
       }
 
-      return [...keys].slice(0, 10);
+      return [...keys].slice(-32);
     }
     function saveScoreCache(){
       try{ localStorage.setItem(SCORE_CACHE_KEY, JSON.stringify({updatedAt:new Date().toISOString(), scores:app.scores, playerEvents:app.playerEvents})); }catch(e){}
@@ -1138,14 +1146,16 @@
     function visibleLiveCandidateMatches(){
       const now = new Date();
 
-      // 不能只看 filteredMatches()。当前日期筛选可能是 06.13，
-      // 但 ESPN 归档/开球时间可能属于 06.14，导致直播比赛没有进入 summary 兜底。
+      // 数据页需要全局事件数据；赛程页仍然以直播/近期开赛为主，减少请求。
       return matchItems().filter(m => {
         const d = matchDate(m);
         const diff = Math.abs(d.getTime() - now.getTime());
         const score = getScoreForMatch(m);
         const st = scoreStatusOf(d, score);
         const mapped = !!espnEventIdForMatch(m);
+        if(app.activeTab !== 'schedule'){
+          return mapped && d.getTime() <= now.getTime() + 12 * 60 * 60 * 1000 && diff <= 14 * 24 * 60 * 60 * 1000;
+        }
         return st === 'live' || diff <= 8 * 60 * 60 * 1000 || (mapped && diff <= 30 * 60 * 60 * 1000);
       });
     }
@@ -1199,8 +1209,14 @@
         .then(() => fetchSummaryScoresForVisibleMatches(true), () => fetchSummaryScoresForVisibleMatches(true))
         .always(() => {
           app.scoreRefreshRunning = false;
-          if(app.scoreCycleChanged) render();
-          else updateScoreInfoStrip();
+          if(app.activeTab !== 'schedule'){
+            app.lastOtherHtml = '';
+            renderDataView();
+          }else if(app.scoreCycleChanged){
+            render();
+          }else{
+            updateScoreInfoStrip();
+          }
         });
     }
     function startLiveScoreTimer(){
@@ -1809,27 +1825,149 @@
       if(!form || !form.length) return '<span class="form-empty">-</span>';
       return form.map(x => `<span class="form-dot ${x.toLowerCase()}">${esc(x)}</span>`).join('');
     }
+    function qualificationText(type){
+      if(app.lang === 'en'){
+        if(type === 'qualified') return 'Qualified';
+        if(type === 'third') return 'Best 3rd';
+        if(type === 'pending') return 'Pending';
+        return 'In zone';
+      }
+      if(app.lang === 'tr'){
+        if(type === 'qualified') return 'Çıktı';
+        if(type === 'third') return 'En iyi 3.';
+        if(type === 'pending') return 'Bekliyor';
+        return 'Bölge';
+      }
+      if(type === 'qualified') return '出线';
+      if(type === 'third') return '最佳第3';
+      if(type === 'pending') return '待定';
+      return '出线区';
+    }
+    function groupStageMatchesForGroup(letter){
+      return matchItems().filter(m =>
+        groupLetter(m.group) === letter &&
+        (m._stageKey || stageKey(m.round)) === 'group' &&
+        realTeamName(m.team1) &&
+        realTeamName(m.team2)
+      );
+    }
+    function groupExpectedMatchCount(letter){
+      const teams = (allGroupTeams()[letter] || []).filter(Boolean).length;
+      return teams >= 2 ? teams * (teams - 1) / 2 : 6;
+    }
+    function matchHasFinalScore(m){
+      if(!m) return false;
+      const score = getScoreForMatch(m);
+      const st = scoreStatusOf(matchDate(m), score);
+      if(st !== 'finished') return false;
+      const s1 = scoreForTeam(score, m.team1);
+      const s2 = scoreForTeam(score, m.team2);
+      return s1 !== '' && s2 !== '' && Number.isFinite(Number(s1)) && Number.isFinite(Number(s2));
+    }
+    function groupCompletedMatchCount(letter){
+      return groupStageMatchesForGroup(letter).filter(matchHasFinalScore).length;
+    }
+    function groupIsComplete(letter){
+      const expected = groupExpectedMatchCount(letter);
+      if(groupStageMatchesForGroup(letter).length < expected) return false;
+      if(groupCompletedMatchCount(letter) < expected) return false;
+      const table = buildStandings();
+      const rows = table[letter] || [];
+      return rows.length >= 4 && rows.every(r => Number(r.played || 0) >= 3);
+    }
+    function bestThirdRows(table, completedOnly=false){
+      const rows = Object.keys(table || {}).map(g => (table[g] || [])[2]).filter(r => {
+        if(!r) return false;
+        if(completedOnly) return groupIsComplete(r.group) && Number(r.played || 0) >= 3;
+        return Number(r.played || 0) > 0;
+      });
+      rows.sort((a,b)=>
+        b.pts - a.pts ||
+        b.gd - a.gd ||
+        b.gf - a.gf ||
+        teamPower(b.team) - teamPower(a.team) ||
+        teamName(a.team).localeCompare(teamName(b.team), localeForLang())
+      );
+      return rows;
+    }
+    function buildQualificationMap(table){
+      const out = {};
+      const groupLetters = Object.keys(table || {}).sort();
+      const completedGroups = groupLetters.filter(g => groupIsComplete(g));
+      const allGroupsComplete = groupLetters.length > 0 && completedGroups.length === groupLetters.length;
+
+      // 当前小组第三排名，只用于显示“待定/最佳第3”状态，不代表已经出线。
+      const currentThirdKeys = new Set(bestThirdRows(table, false).slice(0, 8).map(r => `${r.group}|${normalizeTeam(r.team)}`));
+
+      // 最终最佳第三：必须等所有小组赛都完成后才确认。
+      const finalThirdKeys = allGroupsComplete
+        ? new Set(bestThirdRows(table, true).slice(0, 8).map(r => `${r.group}|${normalizeTeam(r.team)}`))
+        : new Set();
+
+      Object.keys(table || {}).forEach(g => {
+        const complete = groupIsComplete(g);
+        (table[g] || []).forEach((r, idx) => {
+          const key = `${r.group}|${normalizeTeam(r.team)}`;
+
+          // 2026 规则：12 个小组前二 + 8 个成绩最好的小组第三晋级。
+          // 小组前二：小组完赛后才是“出线”；未完赛只显示“出线区”。
+          if(idx < 2){
+            out[key] = {
+              type: complete ? 'qualified' : 'zone',
+              label: qualificationText(complete ? 'qualified' : 'zone'),
+              reason: complete ? 'top-two-final' : 'top-two-zone'
+            };
+            return;
+          }
+
+          // 小组第三：未等全部 12 个小组结束，绝不能标“出线”。
+          // 例如韩国目前只是第三名候选，不能标出线，只能标“待定”。
+          if(idx === 2 && currentThirdKeys.has(key)){
+            if(finalThirdKeys.has(key)){
+              out[key] = {type:'qualified', label:qualificationText('qualified'), reason:'best-third-final'};
+            }else{
+              out[key] = {type:'third', label:qualificationText('pending'), reason:'best-third-pending'};
+            }
+          }
+        });
+      });
+      return out;
+    }
     function renderStandingsView(){
       const table = buildStandings();
       const groups = Object.keys(table).sort();
       if(!groups.length) return dataEmptyHtml(t('standingsTitle'), t('noData'));
+      const qualification = buildQualificationMap(table);
       const cards = groups.map(g => {
-        const rows = table[g].map((r, idx) => `<tr>
-          <td class="rank-cell">${idx + 1}</td>
+        const rows = table[g].map((r, idx) => {
+          const q = qualification[`${r.group}|${normalizeTeam(r.team)}`] || null;
+          const qClass = q ? ` ${q.type === 'qualified' ? 'is-qualified' : (q.type === 'third' ? 'is-third-zone' : 'is-zone')}` : '';
+          return `<tr class="${qClass}">
+          <td class="rank-cell">
+            <div class="standing-rank-box">
+              ${q ? `<span class="standing-qual-tag ${esc(q.type)}">${esc(q.label)}</span>` : ''}
+              <strong>${idx + 1}</strong>
+            </div>
+          </td>
           <td class="team-cell">${tinyFlagHtml(r.team)}<span>${esc(teamName(r.team))}</span></td>
           <td>${r.played}</td><td>${r.win}</td><td>${r.draw}</td><td>${r.loss}</td>
           <td>${r.gf}</td><td>${r.ga}</td><td class="gd-cell">${r.gd > 0 ? '+' : ''}${r.gd}</td>
           <td class="pts-cell">${r.pts}</td><td class="form-cell">${formHtml(r.form)}</td>
-        </tr>`).join('');
+        </tr>`;
+        }).join('');
+        const progressText = app.lang === 'zh'
+          ? (groupIsComplete(g) ? '小组赛已结束' : `已赛 ${groupCompletedMatchCount(g)} / ${groupExpectedMatchCount(g)} 场`)
+          : (groupIsComplete(g) ? 'Group complete' : `Played ${groupCompletedMatchCount(g)} / ${groupExpectedMatchCount(g)}`);
         return `<section class="data-card standings-card">
-          <div class="data-card-head"><div><h3>${esc(groupLabel('Group ' + g))}</h3><p>${esc(t('standingsHint'))}</p></div></div>
+          <div class="data-card-head standings-head-compact"><div><h3>${esc(groupLabel('Group ' + g))}</h3><p>${esc(progressText)}</p></div></div>
           <div class="data-table-wrap"><table class="data-table standings-table">
             <thead><tr><th>#</th><th>${esc(t('teamHeader'))}</th><th>${esc(t('playedShort'))}</th><th>${esc(t('winShort'))}</th><th>${esc(t('drawShort'))}</th><th>${esc(t('lossShort'))}</th><th>${esc(t('gfShort'))}</th><th>${esc(t('gaShort'))}</th><th>${esc(t('gdShort'))}</th><th>${esc(t('ptsShort'))}</th><th>${esc(t('formShort'))}</th></tr></thead>
             <tbody>${rows}</tbody>
           </table></div>
         </section>`;
       }).join('');
-      return dataShell(t('standingsTitle'), t('standingsHint'), cards);
+      // 积分榜页面不再使用 dataShell，删除顶部“数据中心 / 积分榜 / 说明”区域。
+      return `<div class="data-view standings-only-view">${cards}</div>`;
     }
     function buildTeamRanking(){
       const table = buildStandings();
@@ -1940,15 +2078,21 @@
       return dataShell(title, desc || '', `<section class="data-card empty-data-card"><div class="empty-icon">⌕</div><h3>${esc(t('noData'))}</h3><p>${esc(t('noDataHint'))}</p></section>`);
     }
     function dataShell(title, hint, body){
-      return `<div class="data-view"><section class="data-hero-card"><div><div class="data-eyebrow">${esc(t('dataCenter'))}</div><h2>${esc(title)}</h2><p>${esc(hint || '')}</p></div><div class="data-hero-badge">${esc(scoreUpdatedText())}</div></section>${body}</div>`;
+      // V25：球员榜、球队榜、晋级图不再显示顶部“数据中心 / 标题 / 说明”区域。
+      return `<div class="data-view data-view-no-hero">${body}</div>`;
     }
     function renderDataView(){
       let html = '';
-      if(app.activeTab === 'standing') html = renderStandingsView();
-      else if(app.activeTab === 'players') html = renderPlayerBoardView();
-      else if(app.activeTab === 'teams') html = renderTeamBoardView();
-      else if(app.activeTab === 'bracket') html = renderBracketView();
-      else html = dataEmptyHtml(t('dataCenter'), t('unsupported'));
+      try{
+        if(app.activeTab === 'standing') html = renderStandingsView();
+        else if(app.activeTab === 'players') html = renderPlayerBoardView();
+        else if(app.activeTab === 'teams') html = renderTeamBoardView();
+        else if(app.activeTab === 'bracket') html = renderBracketView();
+        else html = dataEmptyHtml(t('dataCenter'), t('unsupported'));
+      }catch(err){
+        console.error('[WorldCup] renderDataView failed:', err);
+        html = `<div class="data-view"><section class="data-card empty-data-card"><div class="empty-icon">!</div><h3>数据渲染失败</h3><p>${esc(err && err.message ? err.message : String(err))}</p></section></div>`;
+      }
       setHtmlIfChanged($('#otherView'), html, 'lastOtherHtml');
     }
     function render(){

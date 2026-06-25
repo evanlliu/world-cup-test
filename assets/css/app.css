@@ -1510,7 +1510,7 @@ body.match-image-viewer-open{overflow:hidden}.match-image-viewer{position:fixed;
 }
 
 
-/* V21 正在比赛原生丝滑横滑兜底 */
+/* V25 正在比赛原生丝滑横滑兜底 */
 @media (max-width:680px){
   .live-panel-list{
     display:flex!important;
@@ -1528,4 +1528,129 @@ body.match-image-viewer-open{overflow:hidden}.match-image-viewer{position:fixed;
     -webkit-user-select:none;
     user-select:none;
   }
+}
+
+
+/* V25 积分榜：删除顶部数据中心说明后，页面从小组卡片直接开始 */
+.standings-only-view{
+  padding-top:0;
+}
+.standings-only-view .standings-card{
+  margin-bottom:14px;
+}
+.standings-head-compact{
+  margin-bottom:10px;
+}
+.standings-head-compact h3{
+  font-size:20px;
+}
+.standings-head-compact p{
+  color:#9aa4b3;
+}
+
+/* V25 积分榜出线标记 */
+.standings-table tbody tr.is-qualified{
+  background:linear-gradient(90deg,rgba(255,247,232,.96),rgba(255,255,255,.72));
+}
+.standings-table tbody tr.is-zone{
+  background:linear-gradient(90deg,rgba(239,246,255,.82),rgba(255,255,255,.70));
+}
+.standings-table tbody tr.is-third-zone{
+  background:linear-gradient(90deg,rgba(245,243,255,.78),rgba(255,255,255,.70));
+}
+.standing-rank-box{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:4px;
+  min-width:48px;
+}
+.standing-rank-box strong{
+  font-size:15px;
+  line-height:1;
+}
+.standing-qual-tag{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:42px;
+  height:20px;
+  padding:0 7px;
+  border-radius:999px;
+  font-size:10px;
+  font-weight:950;
+  line-height:1;
+  white-space:nowrap;
+}
+.standing-qual-tag.qualified{
+  background:#fff1d8;
+  color:#ff8a00;
+}
+.standing-qual-tag.zone{
+  background:#eaf1ff;
+  color:#3158df;
+}
+.standing-qual-tag.third{
+  background:#f0eaff;
+  color:#7c3aed;
+}
+
+@media (max-width:680px){
+  .standings-only-view{
+    padding:0 0 18px;
+  }
+  .standings-only-view .standings-card{
+    padding:14px 12px;
+    border-radius:18px;
+  }
+  .standing-rank-box{
+    min-width:44px;
+  }
+  .standing-qual-tag{
+    min-width:38px;
+    height:18px;
+    padding:0 6px;
+    font-size:9px;
+  }
+}
+
+
+/* V25 数据页去掉顶部比分更新时间块 */
+.data-hero-card-no-score .data-hero-badge,
+.data-view .data-hero-badge{
+  display:none!important;
+}
+.data-hero-card-no-score{
+  grid-template-columns:1fr!important;
+}
+
+/* V25 数据页实时刷新时避免闪动 */
+#otherView .data-view{
+  contain:layout paint;
+}
+
+
+/* V25 数据页删除顶部说明区域块 */
+.data-view-no-hero{
+  padding-top:0!important;
+}
+.data-view-no-hero .data-hero-card,
+#otherView .data-hero-card{
+  display:none!important;
+}
+#otherView .player-rank-grid,
+#otherView .team-rank-grid,
+#otherView .bracket-board{
+  margin-top:0!important;
+}
+
+
+/* V25 严格出线逻辑：第三名待定，不能误显示出线 */
+.standing-qual-tag.third{
+  background:#eef2ff!important;
+  color:#3f63ff!important;
+}
+.standings-table tbody tr.is-third-zone{
+  background:linear-gradient(90deg,rgba(239,246,255,.76),rgba(255,255,255,.70))!important;
 }
