@@ -1510,7 +1510,7 @@ body.match-image-viewer-open{overflow:hidden}.match-image-viewer{position:fixed;
 }
 
 
-/* V25 正在比赛原生丝滑横滑兜底 */
+/* V26 正在比赛原生丝滑横滑兜底 */
 @media (max-width:680px){
   .live-panel-list{
     display:flex!important;
@@ -1531,7 +1531,7 @@ body.match-image-viewer-open{overflow:hidden}.match-image-viewer{position:fixed;
 }
 
 
-/* V25 积分榜：删除顶部数据中心说明后，页面从小组卡片直接开始 */
+/* V26 积分榜：删除顶部数据中心说明后，页面从小组卡片直接开始 */
 .standings-only-view{
   padding-top:0;
 }
@@ -1548,7 +1548,7 @@ body.match-image-viewer-open{overflow:hidden}.match-image-viewer{position:fixed;
   color:#9aa4b3;
 }
 
-/* V25 积分榜出线标记 */
+/* V26 积分榜出线标记 */
 .standings-table tbody tr.is-qualified{
   background:linear-gradient(90deg,rgba(255,247,232,.96),rgba(255,255,255,.72));
 }
@@ -1616,7 +1616,7 @@ body.match-image-viewer-open{overflow:hidden}.match-image-viewer{position:fixed;
 }
 
 
-/* V25 数据页去掉顶部比分更新时间块 */
+/* V26 数据页去掉顶部比分更新时间块 */
 .data-hero-card-no-score .data-hero-badge,
 .data-view .data-hero-badge{
   display:none!important;
@@ -1625,13 +1625,13 @@ body.match-image-viewer-open{overflow:hidden}.match-image-viewer{position:fixed;
   grid-template-columns:1fr!important;
 }
 
-/* V25 数据页实时刷新时避免闪动 */
+/* V26 数据页实时刷新时避免闪动 */
 #otherView .data-view{
   contain:layout paint;
 }
 
 
-/* V25 数据页删除顶部说明区域块 */
+/* V26 数据页删除顶部说明区域块 */
 .data-view-no-hero{
   padding-top:0!important;
 }
@@ -1646,11 +1646,200 @@ body.match-image-viewer-open{overflow:hidden}.match-image-viewer{position:fixed;
 }
 
 
-/* V25 严格出线逻辑：第三名待定，不能误显示出线 */
+/* V26 严格出线逻辑：第三名待定，不能误显示出线 */
 .standing-qual-tag.third{
   background:#eef2ff!important;
   color:#3f63ff!important;
 }
 .standings-table tbody tr.is-third-zone{
   background:linear-gradient(90deg,rgba(239,246,255,.76),rgba(255,255,255,.70))!important;
+}
+
+
+/* V26 移动端积分榜：取消左右滑动，改成自适应卡片行 */
+@media (max-width:680px){
+  .standings-only-view .data-table-wrap{
+    overflow:visible!important;
+    -webkit-overflow-scrolling:auto!important;
+    border:none!important;
+    border-radius:0!important;
+    background:transparent!important;
+  }
+
+  .standings-only-view .standings-table{
+    display:block!important;
+    width:100%!important;
+    min-width:0!important;
+    border-collapse:separate!important;
+    border-spacing:0!important;
+    font-size:12px!important;
+  }
+
+  .standings-only-view .standings-table thead{
+    display:none!important;
+  }
+
+  .standings-only-view .standings-table tbody{
+    display:flex!important;
+    flex-direction:column!important;
+    gap:9px!important;
+    width:100%!important;
+  }
+
+  .standings-only-view .standings-table tbody tr{
+    display:grid!important;
+    grid-template-columns:48px minmax(0,1fr) 42px 42px 42px!important;
+    grid-template-areas:
+      "rank team team team pts"
+      "rank played win draw loss"
+      "rank gf ga gd form"!important;
+    gap:7px 6px!important;
+    align-items:center!important;
+    width:100%!important;
+    box-sizing:border-box!important;
+    padding:10px 8px!important;
+    border-radius:15px!important;
+    background:#fff!important;
+    box-shadow:0 8px 20px rgba(17,35,90,.06), inset 0 0 0 1px rgba(230,234,242,.92)!important;
+  }
+
+  .standings-only-view .standings-table tbody tr.is-qualified{
+    background:linear-gradient(90deg,rgba(255,247,232,.98),rgba(255,255,255,.90))!important;
+  }
+  .standings-only-view .standings-table tbody tr.is-zone{
+    background:linear-gradient(90deg,rgba(239,246,255,.94),rgba(255,255,255,.90))!important;
+  }
+  .standings-only-view .standings-table tbody tr.is-third-zone{
+    background:linear-gradient(90deg,rgba(239,246,255,.94),rgba(255,255,255,.90))!important;
+  }
+
+  .standings-only-view .standings-table td{
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    min-width:0!important;
+    padding:0!important;
+    border-bottom:none!important;
+    white-space:normal!important;
+    font-size:12px!important;
+    line-height:1.1!important;
+    color:#536070!important;
+    font-weight:900!important;
+    text-align:center!important;
+  }
+
+  .standings-only-view .standings-table td::before{
+    display:block;
+    margin-right:3px;
+    color:#9aa4b3;
+    font-size:10px;
+    font-weight:900;
+  }
+
+  .standings-only-view .standings-table td:nth-child(1){grid-area:rank!important;align-self:stretch!important;}
+  .standings-only-view .standings-table td:nth-child(2){grid-area:team!important;}
+  .standings-only-view .standings-table td:nth-child(3){grid-area:played!important;}
+  .standings-only-view .standings-table td:nth-child(4){grid-area:win!important;}
+  .standings-only-view .standings-table td:nth-child(5){grid-area:draw!important;}
+  .standings-only-view .standings-table td:nth-child(6){grid-area:loss!important;}
+  .standings-only-view .standings-table td:nth-child(7){grid-area:gf!important;}
+  .standings-only-view .standings-table td:nth-child(8){grid-area:ga!important;}
+  .standings-only-view .standings-table td:nth-child(9){grid-area:gd!important;}
+  .standings-only-view .standings-table td:nth-child(10){grid-area:pts!important;}
+  .standings-only-view .standings-table td:nth-child(11){grid-area:form!important;}
+
+  .standings-only-view .standings-table td:nth-child(3)::before{content:"赛";}
+  .standings-only-view .standings-table td:nth-child(4)::before{content:"胜";}
+  .standings-only-view .standings-table td:nth-child(5)::before{content:"平";}
+  .standings-only-view .standings-table td:nth-child(6)::before{content:"负";}
+  .standings-only-view .standings-table td:nth-child(7)::before{content:"进";}
+  .standings-only-view .standings-table td:nth-child(8)::before{content:"失";}
+  .standings-only-view .standings-table td:nth-child(9)::before{content:"净";}
+
+  .standings-only-view .standings-table .rank-cell{
+    width:auto!important;
+    color:#111827!important;
+  }
+
+  .standings-only-view .standing-rank-box{
+    min-width:0!important;
+    width:42px!important;
+    height:100%!important;
+    gap:5px!important;
+  }
+
+  .standings-only-view .standing-rank-box strong{
+    font-size:18px!important;
+  }
+
+  .standings-only-view .standing-qual-tag{
+    min-width:34px!important;
+    max-width:42px!important;
+    height:17px!important;
+    padding:0 4px!important;
+    border-radius:999px!important;
+    font-size:9px!important;
+    transform:none!important;
+  }
+
+  .standings-only-view .team-cell{
+    justify-content:flex-start!important;
+    text-align:left!important;
+    gap:7px!important;
+    color:#111827!important;
+    font-size:14px!important;
+    font-weight:950!important;
+    overflow:hidden!important;
+  }
+
+  .standings-only-view .team-cell span{
+    display:block!important;
+    min-width:0!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    white-space:nowrap!important;
+  }
+
+  .standings-only-view .team-cell .live-mini-flag{
+    width:26px!important;
+    height:18px!important;
+    flex:0 0 auto!important;
+    border-radius:3px!important;
+  }
+
+  .standings-only-view .pts-cell{
+    justify-content:flex-end!important;
+    color:#1739b8!important;
+    font-size:18px!important;
+    font-weight:1000!important;
+  }
+  .standings-only-view .pts-cell::before{
+    content:"分"!important;
+    font-size:10px!important;
+    color:#9aa4b3!important;
+  }
+
+  .standings-only-view .gd-cell{
+    color:#1f2937!important;
+  }
+
+  .standings-only-view .form-cell{
+    min-width:0!important;
+    justify-content:flex-end!important;
+    gap:2px!important;
+  }
+  .standings-only-view .form-cell::before{
+    content:""!important;
+    display:none!important;
+  }
+  .standings-only-view .form-dot{
+    width:18px!important;
+    height:18px!important;
+    margin:0 1px!important;
+    font-size:8px!important;
+  }
+
+  .standings-only-view .standings-card{
+    overflow:hidden!important;
+  }
 }

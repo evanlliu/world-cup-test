@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wc2026-pwa-v25-strict-qualification';
+const CACHE_NAME = 'wc2026-pwa-v26-mobile-standings';
 const APP_SHELL = [
   './',
   './index.html',

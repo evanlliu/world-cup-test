@@ -12,7 +12,7 @@
     const TZ_MAIN = "America/Monterrey";
     const TZ_CHINA = "Asia/Shanghai";
     const CACHE_KEY = "wc2026_schedule_mobile_ui_v1";
-    const PREDICTION_CACHE_KEY = 'wc2026_prediction_cache_v25';
+    const PREDICTION_CACHE_KEY = 'wc2026_prediction_cache_v26';
     const SCORE_CACHE_KEY = "wc2026_score_cache_v9";
     const SCORE_REFRESH_MS = 30000;
 
@@ -106,13 +106,13 @@
     }
 
 
-    const APP_VERSION = "v25";
+    const APP_VERSION = "v26";
 
     const I18N = {
       zh: {
         htmlLang:"zh-CN",
         title:"2026 世界杯",
-        browserTitle:"2026 世界杯赛程 v25",
+        browserTitle:"2026 世界杯赛程 v26",
         pwaAppName:"世界杯2026",
         langZhLabel:"中文",
         langEnLabel:"英文",
@@ -2078,7 +2078,7 @@
       return dataShell(title, desc || '', `<section class="data-card empty-data-card"><div class="empty-icon">⌕</div><h3>${esc(t('noData'))}</h3><p>${esc(t('noDataHint'))}</p></section>`);
     }
     function dataShell(title, hint, body){
-      // V25：球员榜、球队榜、晋级图不再显示顶部“数据中心 / 标题 / 说明”区域。
+      // V26：球员榜、球队榜、晋级图不再显示顶部“数据中心 / 标题 / 说明”区域。
       return `<div class="data-view data-view-no-hero">${body}</div>`;
     }
     function renderDataView(){
